@@ -30,8 +30,8 @@ CREATE TABLE Video(
 );
 
 # Table 2: Creates a table with 6 columns for Model. None of the columns should be left
-#          empty so the defaults are set to zero. The numeric datatype specifies 
-#		   that parentheses are (precision, scale), so (6,2) is a number of maximum  
+#          empty so the defaults are set to zero. The numeric datatype specifies
+#		   that parentheses are (precision, scale), so (6,2) is a number of maximum
 #		   6 digits and a maximum of 2 decimal places.
 # Model (modelNo: char(10), width: numeric (6,2), height: numeric (6,2),
 #        weight: numeric (6,2), depth: numeric (6,2), screenSize: numeric (6,2))
@@ -58,13 +58,38 @@ CREATE TABLE Site(
     phone VARCHAR(16),
     PRIMARY KEY(siteCode)
 );
-# Table 4:
+# Table 4: Creates a table for DigitalDisplay with 3 columns.
+# DigitalDisplay (serialNo: char(10), schedulerSystem: char(10), modelNo: char(10))
+# Foreign key: modelNo references Model (modelNo)
+CREATE TABLE DigitalDisplay(
+  serialNo CHAR(10) UNIQUE NOT NULL,
+  schedularSystem CHAR(10) NOT NULL,
+  modelNo CHAR(10) NOT NULL
+  PRIMARY KEY(serialNo, schedularSystem, modelNo),
+  FOREIGN KEY(modelNo) REFERENCES Model(modelNo)
+    ON DELETE CASCADE
+      ON UPDATE CASCADE
+);
 
-# Table 5:
-
+# Table 5: Creates a table for Client with 4 columns.
+# Client (clientId: integer, name: varchar (40), phone: varchar (16), address: varchar (100)))
+CREATE TABLE Client(
+  # Constraints do not require all client information
+  # to not be optional, however the client unique ID cannot be null.
+  clientId INT UNIQUE NOT NULL,
+  name VARCHAR(40),
+  phone VARCHAR(16),
+  address VARCHAR(100)
+);
 # Table 6:
 
-# Table 7:
+# Table 7: Creates a table for Administrator with 3 columns.
+# Administrator (empId: integer, name: varchar(40), gender: char(1))
+CREATE TABLE Administrator(
+  empId INT UNIQUE NOT NULL,
+  name VARCHAR(40),
+  gender CHAR(1)
+);
 
 # Table 8:
 
@@ -73,36 +98,57 @@ CREATE TABLE Site(
 # Table 10:
 
 # Table 11: Creates a table for Broadcasts. The videoCode column matches the one from Video (table 1).
-#			The siteCode column matches (table 3) Site, so it will not matter if either column isn't unique.
+#			The siteCode column matches (table 3) Site, so it will not matter if either column isnt unique.
 # Broadcasts (videoCode: integer, siteCode: integer)
-# 	Foreign key: videoCode references Video (videoCode)
+# Foreign key: videoCode references Video (videoCode)
 #	Foreign key: siteCode references Site (siteCode)
 CREATE TABLE Broadcasts(
-videoCode INT NOT NULL,
-siteCode INT NOT NULL,
-PRIMARY KEY(videoCode, siteCode),
+  videoCode INT NOT NULL,
+  siteCode INT NOT NULL,
+  PRIMARY KEY(videoCode, siteCode),
 # The column videoCode matches the videoCode from the Video table, so it gets declared as
 # a foreign key here. The action "CASCADE", guarantees that if the parent table gets deleted
 # or updated, the database will automatically delete the corresponding value in this child table.
-FOREIGN KEY (videoCode) REFERENCES Video(videoCode)
-	ON DELETE CASCADE
-    ON UPDATE CASCADE,
+  FOREIGN KEY (videoCode) REFERENCES Video(videoCode)
+	 ON DELETE CASCADE
+      ON UPDATE CASCADE,
 # The column siteCode matches the siteCode from the Site table, so it gets declared as
 # a foreign key here. The action "CASCADE", guarantees that if the parent table gets deleted
 # or updated, the database will automatically delete the corresponding value in this child table.
-FOREIGN KEY(siteCode) REFERENCES Site(siteCode)
-	ON DELETE CASCADE
-    ON UPDATE CASCADE
+  FOREIGN KEY(siteCode) REFERENCES Site(siteCode)
+	 ON DELETE CASCADE
+      ON UPDATE CASCADE
 );
 
-# Table 12:
+# Table 12: Creates a table for Administers. The empId column matches the one from Adminstrator(table 7).
+# The siteCode column matches (table 3) Site, so it will not matter if either column isnt unique.
+# Administers(empId: integer, siteCode: integer)
+# Foreign key: empId references Adminstrator(empId)
+# Foreign key: siteCode references Site(siteCode)
+CREATE TABLE Adminsters(
+  empId INT NOT NULL,
+  siteCode INT NOT NULL,
+  PRIMARY KEY (empId, siteCode),
+  # The column empId matches the empId from the Administrator table, so it gets declared as
+  # a foreign key here. The action "CASCADE", guarantees that if the parent table gets deleted
+  # or updated, the database will automatically delete the corresponding value in this child table.
+  FOREIGN KEY (empId) REFERENCES Adminisrator(empId)
+    ON DELETE CASCADE
+      ON UPDATE CASCADE,
+  # The column siteCode matches the siteCode from the Site table, so it gets declared as
+  # a foreign key here. The action "CASCADE", guarantees that if the parent table gets deleted
+  # or updated, the database will automatically delete the corresponding value in this child table.
+  FOREIGN KEY (siteCode) REFERENCES Site(siteCode)
+    ON DELETE CASCADE
+      ON UPDATE CASCADE,
+);
 
 # Table 13:
 
-# Table 14: Creates a table for Purchases with 4 columns. 
-# Purchases (clientId: integer, empId: integer, packageId: integer, commissionRate: numeric (4,2)) 
+# Table 14: Creates a table for Purchases with 4 columns.
+# Purchases (clientId: integer, empId: integer, packageId: integer, commissionRate: numeric (4,2))
 #	Foreign key: clientId references Client (clientId)
-#	Foreign key: empId references Salesman (empId) 
+#	Foreign key: empId references Salesman (empId)
 #	Foreign key: packageId references AirtimePackage (packageId)
 CREATE TABLE Purchases(
 	# Clients should be able to make more than one purchase so the ID does not need to be unique.
@@ -111,7 +157,7 @@ CREATE TABLE Purchases(
     empID INT NOT NULL,
     # The package ID should be different to avoid duplicate row entries.
     packageID INT UNIQUE NOT NULL,
-    # The comission rate doesn't need to be unique.
+    # The comission rate doesnt need to be unique.
     comissionRate NUMERIC(4,2) DEFAULT 0,
     # Three columns together make up the primary key in this table.
     PRIMARY KEY(clientID, empID, packageID),
@@ -128,14 +174,35 @@ CREATE TABLE Purchases(
 		ON DELETE CASCADE
         ON UPDATE CASCADE,
 	# The column packageID appears in AirtimePackage table as a primary key, so is referenced here
-    # as a foreign key. The action "CASCADE", guarantees that if the parent table gets deleted or 
+    # as a foreign key. The action "CASCADE", guarantees that if the parent table gets deleted or
     # updated, the database will automatically delete the corresponding value in this child table.
     FOREIGN KEY(packageID) REFERENCES AirtimePackage(packageID)
 		ON DELETE CASCADE
         ON UPDATE CASCADE
 );
 
-# Table 15:
+# Table 15: Creates a table for Locates. The serialNo column matches the one from DigitalDisplay(table 4).
+# The siteCode column matches (table 3) Site, so it will not matter if either column isnt unique.
+# Locates (serialNo: char (10), siteCode: integer)
+# Foreign key: serialNo references DigitalDisplay (serialNo)
+# Foreign key: siteCode references Site (siteCode)
+CREATE TABLE Locates(
+  serialNo CHAR(10) NOT NULL,
+  siteCode INT NOT NULL,
+  PRIMARY KEY (serialNo, siteCode),
+  # The column serialNo matches the serialNo from the DigitalDisplay table, so it gets declared as
+  # a foreign key here. The action "CASCADE", guarantees that if the parent table gets deleted
+  # or updated, the database will automatically delete the corresponding value in this child table.
+  FOREIGN KEY (serialNo) REFERENCES DigitalDisplay(serialNo)
+    ON DELETE CASCADE
+      ON UPDATE CASCADE,
+  # The column siteCode matches the siteCode from the Site table, so it gets declared as
+  # a foreign key here. The action "CASCADE", guarantees that if the parent table gets deleted
+  # or updated, the database will automatically delete the corresponding value in this child table.
+  FOREIGN KEY (siteCode) REFERENCES Site(siteCode)
+    ON DELETE CASCADE
+      ON UPDATE CASCADE,
+);
 
 
 # Step Three: TBD
