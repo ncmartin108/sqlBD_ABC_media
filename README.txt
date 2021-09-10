@@ -12,6 +12,7 @@
 Team Member Duties
 
 Matt H:
+	* Create a communication channel on Discord and invite other team members.
 	* Write DDL statements to create 5 tables and constraints for crtdb.sql using
 	  the description of the schema.
 	* Review the DDL statements of the remaining 10 tables created by the other team members
@@ -28,7 +29,7 @@ Mari L-P:
 		* Check that the required constraints are implemented.
 
 Nasley C-M:
-	* Create and share SQL documents repository.
+	* Create and share SQL documents repository on GitHub.
 	* Write DDL statements to create 5 tables and constraints for crtdb.sql using
 	  the description of the schema.
 	* Review the DDL statements of the remaining 10 tables created by other team members
