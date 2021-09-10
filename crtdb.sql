@@ -12,8 +12,9 @@
 #*******************************************************************************
 
 # Step One: The schema has to be defined so that tables can be inserted.
-
-CREATE SCHEMA abc_media_db;
+# Comment out if you're re-running on a system where the database already
+# exists.
+#CREATE SCHEMA abc_media_db;
 
 
 # Step Two: Creates the database tables with the specific columns as described in
@@ -71,7 +72,7 @@ CREATE TABLE DigitalDisplay(
   PRIMARY KEY(serialNo),
   FOREIGN KEY(modelNo) REFERENCES Model(modelNo)
     ON DELETE CASCADE
-	ON UPDATE CASCADE,
+	 ON UPDATE CASCADE,
   # NCM: Added constraint so that digital display is only random, smart or virtue.
   CHECK (schedulerSystem IN ('random', 'smart', 'virtue'))
 );
@@ -182,7 +183,7 @@ CREATE TABLE Adminsters(
 	# The column empId matches the empId from the Administrator table, so it gets declared as
 	# a foreign key here. The action "CASCADE", guarantees that if the parent table gets deleted
 	# or updated, the database will automatically delete the corresponding value in this child table.
-	FOREIGN KEY (empId) REFERENCES Adminisrator(empId)
+	FOREIGN KEY (empId) REFERENCES Administrator(empId)
 		ON DELETE CASCADE
 		ON UPDATE CASCADE,
 	# The column siteCode matches the siteCode from the Site table, so it gets declared as
@@ -190,7 +191,7 @@ CREATE TABLE Adminsters(
 	# or updated, the database will automatically delete the corresponding value in this child table.
 	FOREIGN KEY (siteCode) REFERENCES Site(siteCode)
 		ON DELETE CASCADE
-        ON UPDATE CASCADE
+      ON UPDATE CASCADE
 );
 
 # Table 13: This creates a table for specializes with 2 columns.
