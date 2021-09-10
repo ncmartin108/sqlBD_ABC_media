@@ -19,6 +19,7 @@ Matt H:
 	  and check the syntax.
 		* Discuss any proposed changes with team members and explain syntax/functionality.
 		* Check that the required constraints are implemented.
+	* Create DML statements to populate 5 of the tables with sample data.
 	
 Mari L-P:
 	* Write DDL statements to create 5 tables and constraints for crtdb.sql using
@@ -27,6 +28,7 @@ Mari L-P:
 	  and check the syntax.
 		* Discuss any proposed changes with team members and explain syntax/functionality.
 		* Check that the required constraints are implemented.
+	* Create DML statements to populate 5 of the tables with sample data.
 
 Nasley C-M:
 	* Create and share SQL documents repository on GitHub.
@@ -36,3 +38,4 @@ Nasley C-M:
 	  and check the syntax.
 		* Discuss any proposed changes with team members and explain syntax/functionality.
 	 	* Check that the required constraints are implemented.
+	* Create DML statements to populate 5 of the tables with sample data.

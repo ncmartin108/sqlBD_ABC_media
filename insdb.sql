@@ -33,19 +33,19 @@ VALUES (2417, 88);
 # Step 2: Populate the Model table (contains columns: modelNo, width, height, weight, depth, screenSize).
 
 INSERT INTO Model
-VALUES ('DD19608', 1.78, 1.85, 5, 5.74 );
+VALUES ('DD19608', 1.78, 1.85, 5, 5.74, 2);
 
 INSERT INTO Model
-VALUES ('DA45229', 3.45, 5.39, 3.02, 6.56 );
+VALUES ('DA45229', 3.45, 5.39, 3.02, 6.56, 3.4);
 
 INSERT INTO Model
-VALUES ('VH356693', 3.25, 3.25, 2, 15.39 );
+VALUES ('VH356693', 3.25, 3.25, 2, 15.39, 6.3);
 
 INSERT INTO Model
-VALUES ('BR722344', 12.23, 4.36, 2.1, 55.2 );
+VALUES ('BR722344', 12.23, 4.36, 2.1, 55.2, 5.2);
 
 INSERT INTO Model
-VALUES ('VH971230', 3.76, 12.3, 10.40, 16.9 );
+VALUES ('VH971230', 3.76, 12.3, 10.40, 16.9, 5.3);
 
 #---------------------------------------------------------------------------------------
 
@@ -248,19 +248,19 @@ VALUES (8965, 'DD19608');
 # Step 14: Populate the Purchases table (contains columns: clientId, empId, packageId,
 # comissionRate).
 
-INSERT INTO PURCHASES
+INSERT INTO Purchases
 VALUES (774, 9941, 231, 0.05);
 
-INSERT INTO PURCHASES
+INSERT INTO Purchases
 VALUES (15, 689, 232, 0.04);
 
-INSERT INTO PURCHASES
+INSERT INTO Purchases
 VALUES (22, 689, 233, 0.04);
 
-INSERT INTO PURCHASES
+INSERT INTO Purchases
 VALUES (45, 223, 234, 0.04);
 
-INSERT INTO PURCHASES
+INSERT INTO Purchases
 VALUES (23, 1228, 230, 0.05);
 
 #---------------------------------------------------------------------------------------

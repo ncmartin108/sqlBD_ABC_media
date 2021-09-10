@@ -176,7 +176,7 @@ CREATE TABLE Broadcasts(
 # Administers(empId: integer, siteCode: integer)
 # Foreign key: empId references Adminstrator(empId)
 # Foreign key: siteCode references Site(siteCode)
-CREATE TABLE Adminsters(
+CREATE TABLE Administers(
 	# Neither of these fields are unique because an employee can administrate more than 1 site,
     # and a site can potentially have more than 1 administrator.
 	empId INT NOT NULL,
