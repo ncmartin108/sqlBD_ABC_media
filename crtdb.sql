@@ -5,9 +5,8 @@
 #	CS482 Database Management Systems I
 #
 #	Description:	This file creates an SQL database with the required tables,
-#					foreign keys, and value constraints. The schema for this
-#					database is in the Project Part 1 documents for a
-#					fictional company named ABC Media.
+#	foreign keys, and value constraints. The schema for this database is in 
+#	the Project Part 1 documents for a fictional company named ABC Media.
 #
 #*******************************************************************************
 
@@ -154,6 +153,7 @@ CREATE TABLE AdmWorkHours(
 # Foreign key: videoCode references Video (videoCode)
 # Foreign key: siteCode references Site (siteCode)
 CREATE TABLE Broadcasts(
+	# Neither of these fields have to be unique because they reference other tables.
 	videoCode INT NOT NULL,
 	siteCode INT NOT NULL,
 	PRIMARY KEY(videoCode, siteCode),
@@ -177,6 +177,8 @@ CREATE TABLE Broadcasts(
 # Foreign key: empId references Adminstrator(empId)
 # Foreign key: siteCode references Site(siteCode)
 CREATE TABLE Adminsters(
+	# Neither of these fields are unique because an employee can administrate more than 1 site,
+    # and a site can potentially have more than 1 administrator.
 	empId INT NOT NULL,
 	siteCode INT NOT NULL,
 	PRIMARY KEY (empId, siteCode),
@@ -191,7 +193,7 @@ CREATE TABLE Adminsters(
 	# or updated, the database will automatically delete the corresponding value in this child table.
 	FOREIGN KEY (siteCode) REFERENCES Site(siteCode)
 		ON DELETE CASCADE
-      ON UPDATE CASCADE
+		ON UPDATE CASCADE
 );
 
 # Table 13: This creates a table for specializes with 2 columns.
