@@ -13,8 +13,9 @@
 # Step One: The schema has to be defined so that tables can be inserted.
 # Comment out if you're re-running on a system where the database already
 # exists.
-#CREATE SCHEMA abc_media_db;
-
+#drop database abc_media_db; # comment out when not using to test
+CREATE database abc_media_db;
+use abc_media_db;
 
 # Step Two: Creates the database tables with the specific columns as described in
 #           the project documentation.
@@ -22,8 +23,8 @@
 # Table 1: Creates a table with two columns for Video. Neither column should be empty.
 # Video (videoCode: integer, videoLength: integer)
 CREATE TABLE Video(
-  videoCode INT UNIQUE NOT NULL,
-  videoLength INT DEFAULT 0,
+  videoCode INT,
+  videoLength INT,
   # Since video lengths can be the same, only video codes need to be unique and
   # the primmary key.
   PRIMARY KEY(videoCode)
@@ -36,12 +37,12 @@ CREATE TABLE Video(
 # Model (modelNo: char(10), width: numeric (6,2), height: numeric (6,2),
 #   weight: numeric (6,2), depth: numeric (6,2), screenSize: numeric (6,2))
 CREATE TABLE Model(
-	modelNo CHAR(10) UNIQUE NOT NULL,
-	width NUMERIC(6,2) DEFAULT 0,
-	height NUMERIC(6,2) DEFAULT 0,
-	weight NUMERIC(6,2) DEFAULT 0,
-	depth NUMERIC(6,2) DEFAULT 0,
-	screenSize NUMERIC(6,2) DEFAULT 0,
+	modelNo CHAR(10),
+	width NUMERIC(6,2) ,
+	height NUMERIC(6,2) ,
+	weight NUMERIC(6,2) ,
+	depth NUMERIC(6,2) ,
+	screenSize NUMERIC(6,2) ,
 	# The model number is the primary key in this table and should be unique.
 	PRIMARY KEY(modelNo)
 );
@@ -49,10 +50,10 @@ CREATE TABLE Model(
 # Table 3: Creates a table for Site with 4 columns.
 # Site (siteCode: integer, type: varchar (16), address: varchar(100), phone: varchar(16))
 CREATE TABLE Site(
-	siteCode INT UNIQUE NOT NULL,
+	siteCode INT,
     # The type of site is constrained by only a bar or restaurant, so it cannot be empty
     # and there are only 2 choices.
-    type VARCHAR(16) NOT NULL
+    type VARCHAR(16)
 		CHECK (type = 'bar' OR type = 'restaurant'),
     address VARCHAR(100),
     phone VARCHAR(16),
@@ -63,9 +64,9 @@ CREATE TABLE Site(
 # DigitalDisplay (serialNo: char(10), schedulerSystem: char(10), modelNo: char(10))
 # Foreign key: modelNo references Model (modelNo)
 CREATE TABLE DigitalDisplay(
-  serialNo CHAR(10) UNIQUE NOT NULL,
-  schedulerSystem CHAR(10) NOT NULL,
-  modelNo CHAR(10) NOT NULL,
+  serialNo CHAR(10),
+  schedulerSystem CHAR(10),
+  modelNo CHAR(10),
   # NCM: Added comma, and changed primary key to serialNo because it's the only 
   # one underlined in DB specification.
   PRIMARY KEY(serialNo),
@@ -81,7 +82,7 @@ CREATE TABLE DigitalDisplay(
 CREATE TABLE Client(
   # Constraints do not require all client information
   # to not be optional, however the client unique ID cannot be null.
-  clientId INT UNIQUE NOT NULL,
+  clientId INT,
   name VARCHAR(40),
   phone VARCHAR(16),
   address VARCHAR(100),
@@ -93,9 +94,9 @@ CREATE TABLE Client(
 # TechnicalSupport (empId: integer, name: varchar (40), gender: char (1))
 CREATE TABLE TechnicalSupport(
 	# The employee ID should be a unique identifier and never left null.
-	empId INT UNIQUE NOT NULL,
+	empId INT,
     # A name doesn't have to be unique, but it should also not be empty.
-    name VARCHAR(40) NOT NULL,
+    name VARCHAR(40),
     gender CHAR(1),
     PRIMARY KEY (empId)
 );
@@ -103,7 +104,7 @@ CREATE TABLE TechnicalSupport(
 # Table 7: Creates a table for Administrator with 3 columns.
 # Administrator (empId: integer, name: varchar(40), gender: char(1))
 CREATE TABLE Administrator(
-  empId INT UNIQUE NOT NULL,
+  empId INT,
   name VARCHAR(40),
   gender CHAR(1),
   # NCM: Added primary key.
@@ -115,8 +116,8 @@ CREATE TABLE Administrator(
 CREATE TABLE Salesman(
 # The employee ID has to be unique and not empty. Names can be non-unique but should
 # also not be empty.
-empId INT UNIQUE NOT NULL,
-name VARCHAR(40) NOT NULL,
+empId INT,
+name VARCHAR(40),
 gender CHAR(1),
 PRIMARY KEY(empId)
 );
@@ -126,13 +127,13 @@ PRIMARY KEY(empId)
 #    frequency: integer, videoCode: integer)
 CREATE TABLE AirtimePackage(
 	# Since the package ID is the primary key, it should be unique and not null.
-	packageId INT UNIQUE NOT NULL,
+	packageId INT,
     class VARCHAR(16),
     # The DATE format is YYYY-MM-DD
     startDate DATE,
     lastDate DATE,
     frequency INT,
-    videoCode INT NOT NULL,
+    videoCode INT,
     PRIMARY KEY(packageId),
     CHECK (class IN('economy', 'whole day', 'golden hours'))
 );
@@ -141,9 +142,9 @@ CREATE TABLE AirtimePackage(
 # AdmWorkHours (empId: integer, day: date, hours: numeric (4,2))
 # Foreign key: empId references Administrator (empId)
 CREATE TABLE AdmWorkHours(
-	empId INT UNIQUE NOT NULL,
-    day DATE NOT NULL,
-    hours NUMERIC(4,2) NOT NULL,
+	empId INT,
+    day DATE,
+    hours NUMERIC(4,2),
     PRIMARY KEY(empId, day)
 );
 
@@ -154,8 +155,8 @@ CREATE TABLE AdmWorkHours(
 # Foreign key: siteCode references Site (siteCode)
 CREATE TABLE Broadcasts(
 	# Neither of these fields have to be unique because they reference other tables.
-	videoCode INT NOT NULL,
-	siteCode INT NOT NULL,
+	videoCode INT,
+	siteCode INT,
 	PRIMARY KEY(videoCode, siteCode),
     # The column videoCode matches the videoCode from the Video table, so it gets declared as
     # a foreign key here. The action "CASCADE", guarantees that if the parent table gets deleted
@@ -179,8 +180,8 @@ CREATE TABLE Broadcasts(
 CREATE TABLE Administers(
 	# Neither of these fields are unique because an employee can administrate more than 1 site,
     # and a site can potentially have more than 1 administrator.
-	empId INT NOT NULL,
-	siteCode INT NOT NULL,
+	empId INT,
+	siteCode INT,
 	PRIMARY KEY (empId, siteCode),
 	# The column empId matches the empId from the Administrator table, so it gets declared as
 	# a foreign key here. The action "CASCADE", guarantees that if the parent table gets deleted
@@ -201,8 +202,8 @@ CREATE TABLE Administers(
 # Foreign key: empId references TechnicalSupport (empId)
 # Foreign key: modelNo references Model (modelNo)
 CREATE TABLE Specializes (
-	empId INT NOT NULL,
-    modelNo CHAR(10) NOT NULL,
+	empId INT,
+    modelNo CHAR(10),
     PRIMARY KEY (empId, modelNo),
     FOREIGN KEY(empId) REFERENCES TechnicalSupport(empId)
 		ON DELETE CASCADE
@@ -219,13 +220,13 @@ CREATE TABLE Specializes (
 #	Foreign key: packageId references AirtimePackage (packageId)
 CREATE TABLE Purchases(
 	# Clients should be able to make more than one purchase so the ID does not need to be unique.
-	clientId INT NOT NULL,
+	clientId INT,
     # The same employee can help the same client, so this column also does not need to be unique.
-    empId INT NOT NULL,
+    empId INT,
     # The package ID should be different to avoid duplicate row entries.
-    packageId INT UNIQUE NOT NULL,
+    packageId INT,
     # The comission rate doesnt need to be unique.
-    comissionRate NUMERIC(4,2) DEFAULT 0,
+    comissionRate NUMERIC(4,2),
     # Three columns together make up the primary key in this table.
     PRIMARY KEY(clientId, empId, packageId),
 	# The column clientID appears a primary key in table 5 Client and is declared here as a foreign key.
@@ -254,8 +255,8 @@ CREATE TABLE Purchases(
 # Foreign key: serialNo references DigitalDisplay (serialNo)
 # Foreign key: siteCode references Site (siteCode)
 CREATE TABLE Locates(
-	serialNo CHAR(10) NOT NULL,
-	siteCode INT NOT NULL,
+	serialNo CHAR(10),
+	siteCode INT,
 	PRIMARY KEY (serialNo, siteCode),
 	# The column serialNo matches the serialNo from the DigitalDisplay table, so it gets declared as
 	# a foreign key here. The action "CASCADE", guarantees that if the parent table gets deleted
