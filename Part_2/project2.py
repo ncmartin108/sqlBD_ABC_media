@@ -1,4 +1,5 @@
 import mysql.connector # import connector
+import argparse  # Import argument parsing
 
 #
 #	Project: Part 2
@@ -20,14 +21,30 @@ mydb = mysql.connector.connect(
 	)
 
 def main():
-	#args = sys.argv[1:]
-	#args list 
+	# Creates a parsing object.
+	parser = argparse.ArgumentParser()
+	# Create the positional arguments.
+	# The first command line argument is for the question number.
+	parser.add_argument("question_no", help="Enter the question number.", type=int, choices=range(1,9))
+	# The second command line argument is for questions 1, 2, 4, 6. Nargs is the number of arguments, and
+	# '?' is one (optional) argument.
+	parser.add_argument("parameter", help="For questions 1, 2, 4, and 6 enter the search parameter.", nargs='?')
+
+	args = parser.parse_args()
+	print(args.question_no)
+
+	if args.parameter:
+		print(args.parameter)
+
 	# Create a cursor object to manipulate database.
 	mycursor = mydb.cursor();
 
 	# This section will contain "Parametrized queries", where the queries
 	# are saved as specific strings and the values are inserted at
 	# execution time.
+
+	# Question 1: Find the sites that are on a given street (i.e. the address contains
+	# the street name, case insensitive). Show the detailed information of each site.
 	sql="select * from Site where address = '34882 Gleichner Circle';"
 	#sql1="select * from Site where address = %s;"
 	#addr=('34882 Gleichner Circle')
