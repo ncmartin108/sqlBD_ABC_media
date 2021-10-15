@@ -10,6 +10,7 @@
 #	keys. Please note that this information is completely fictional.
 #
 #*******************************************************************************
+use abc_media_db;#which database to use
 
 # Step 1: Populate the Video table (contains columns: videoCode, videoLength).
 
