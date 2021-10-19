@@ -35,6 +35,7 @@ def main():
 
 	if args.parameter:
 		print(args.parameter)
+		param=(args.parameter)
 
 	# Create a cursor object to manipulate database.
 	mycursor = mydb.cursor();
@@ -45,13 +46,23 @@ def main():
 
 	# Question 1: Find the sites that are on a given street (i.e. the address contains
 	# the street name, case insensitive). Show the detailed information of each site.
-	sql="select * from Site where address = '34882 Gleichner Circle';"
-	#sql1="select * from Site where address = %s;"
-	#addr=('34882 Gleichner Circle')
-	#addr=input("Enter address to search for in sites: ")
+	#sql="select * from Site where address = '34882 Gleichner Circle';"
+	if args.question_no==1:
+		sql="select * from Site where address = %s;"
+		answer=(param,)
+		mycursor.execute(sql,answer)
+
+	if args.question_no==2:
+		sql="SELECT serialNo, Specializes.modelNo, name FROM DigitalDisplay NATURAL JOIN TechnicalSupport NATURAL JOIN Specializes WHERE schedulerSystem = %s;"
+		answer=(param,)
+		mycursor.execute(sql,answer)
+
+	if args.question_no==5:
+		sql="SELECT empId, name, SUM(hours) AS total FROM AdmWorkHours NATURAL JOIN Administrator GROUP BY empId , name ORDER BY SUM(hours) ASC;" 
+		mycursor.execute(sql)
 	
-	mycursor.execute(sql)
-	#mycursor.execute(sql1,addr)
+	#mycursor.execute(sql)
+	#mycursor.execute(sql,answer)
 
 	# Cursor object has a fetchall() methohd to fetch all the records present 
 	# in the results table.
