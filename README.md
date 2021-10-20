@@ -24,5 +24,6 @@ The list below specifies which question numbers require a parameter in addition 
 - python project2.py 6 <param_model_no>
 - python project2.py 7
 - python project2.py 8
+
 Note: The program hard codes the SQL database connection, as well as parametrizes specific SQL queries. In this manner, we can help protect
 from SQL injection.
