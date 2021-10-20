@@ -19,7 +19,7 @@ Kashka C:
 	
 Matt H:
 	* Meet with team members and decide the programming language for Part 2 (Python vs. Java).
-	* Create queries for Questions: 6, 4, 8
+	* Create queries for Questions: 4, 6, 8
 	* Test other team member's queries to ensure they work on CS department computers.
 	* Package and submit project.
 
