@@ -38,8 +38,10 @@ def main():
 		param=(args.parameter)
 
 	# Create a cursor object to manipulate database.
-	mycursor = mydb.cursor();
+	mycursor = mydb.cursor(buffered=True);
 
+	# Creates a second cursor to manipulate Question #3.
+	mycursor2 = mydb.cursor(buffered=True);
 
 	# --------------------------------------------------------------------------------------------------------
 	# This section will contain "Parametrized queries", where the queries
@@ -66,13 +68,36 @@ def main():
 	# should be in the ascending order of the salesmen name. If multiple salesmen have the same name, 
 	# show all the attribute values for those salesmen.
 	if args.question_no==3:
-		sql = "SELECT FROM WHERE;"
+		# First sql query.
+		sql = "SELECT DISTINCT S.name, COUNT(S.name) AS cnt FROM Salesman AS S GROUP BY S.name ORDER BY S.name ASC;"
+		
+		# Separate the first set of results row by row.
 		mycursor.execute(sql)
+		row = mycursor.fetchone()
+
+		while row is not None:
+			if (row[1] == 1):
+				print(row)
+				row = mycursor.fetchone()
+			else:
+				name_param = str(row[0])
+				# Create a second SQL query to get names.
+				query = "SELECT Sa.* FROM Salesman AS Sa WHERE Sa.name = "
+				sql2 = query + "'" + name_param + "';"
+				mycursor2.execute(sql2)
+				second_results = mycursor2.fetchall()
+				
+				for x in second_results:
+					print (row, ", ", x, ", ", end = "")
+				
+				print (" ")
+				row = mycursor.fetchone()
+
 	
 	# Question 4: Find the clients with a given phone no. The phone no should be a parameter input 
 	# through the main program.
-        if args.question_no==4:
-                answer=(param,)
+	if args.question_no==4:
+		answer=(param,)
 		sql="SELECT * from Client where phone = '%s;';"
 		mycursor.execute(sql, answer)
 
@@ -86,7 +111,7 @@ def main():
 	# of those technical supports. The specified model no should be a parameter input through 
 	# the main program.
 	if args.question_no==6:
-                answer=(param,)
+		answer=(param,)
 		sql="SELECT tech.name FROM TechnicalSupport as tech, Specializes as spec WHERE spec.modelNo = '%s' AND tech.empID = spec.empID;" 
 		mycursor.execute(sql, answer)
 
@@ -104,9 +129,9 @@ def main():
 	#		Administrator		10
 	#		Salesmen			40
 	#		Technicians			20
-        #if args.question_no==8:
-	#	sql="#" 
-	#	mycursor.execute(sql)
+	if args.question_no==8:
+		sql="SELECT 'Administrator' AS Role, COUNT(DISTINCT Adm.empId) AS cnt FROM Administrator AS Adm UNION SELECT 'Salesmen' AS Role, COUNT(DISTINCT S.empId) FROM Salesman AS S UNION SELECT 'Technicians' AS Role, COUNT(DISTINCT T.empId) FROM TechnicalSupport AS T;" 
+		mycursor.execute(sql)
 
 	# --------------------------------------------------------------------------------------------------------
 	# End of "Parametrized queries".
@@ -123,6 +148,7 @@ def main():
 	if(mydb.is_connected()):
 		mydb.close()
 		mycursor.close()
+		mycursor2.close()
 		print("MySQL database connection is closed.")
 	
 if __name__=="__main__":

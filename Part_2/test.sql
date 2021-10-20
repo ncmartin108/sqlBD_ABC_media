@@ -33,9 +33,34 @@ FROM Salesman AS S
 GROUP BY S.name
 ORDER BY S.name ASC;
 
+SELECT S.*
+FROM (SELECT Sa.empId, Sa.name, Sa.gender
+	FROM Salesman AS Sa
+	GROUP BY Sa.name
+	HAVING COUNT(Sa.name) >= 2) AS T1
+LEFT JOIN Salesman AS S ON T1.name = S.name;
+
+
+
 # Question 7: Order the salesmen with descending order of their average commission rates. 
 # Display each salesman’s name and the average commission rate.
-SELECT S.name, AVG(P.comissionRate) AS Avg_CommissionRate, empId
+SELECT S.name, AVG(P.comissionRate) AS Avg_CommissionRate
 FROM Salesman AS S NATURAL JOIN Purchases AS P
-GROUP BY P.empId
-ORDER BY AVG(P.comissionRate) DESC;
+GROUP BY P.empId;
+
+# Question 8: Calculate the number of administrators, salesmen, and technical supports. 
+# Display the results in the following format.
+	#		Role				cnt
+	#		------------------
+	#		Administrator		10
+	#		Salesmen			40
+	#		Technicians			20
+SELECT 'Administrator' AS Role, COUNT(DISTINCT Adm.empId) AS cnt
+FROM Administrator AS Adm
+UNION
+SELECT 'Salesmen' AS Role, COUNT(DISTINCT S.empId)
+FROM Salesman AS S
+UNION
+SELECT 'Technicians' AS Role, COUNT(DISTINCT T.empId)
+FROM TechnicalSupport AS T;
+
