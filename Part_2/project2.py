@@ -71,7 +71,10 @@ def main():
 	
 	# Question 4: Find the clients with a given phone no. The phone no should be a parameter input 
 	# through the main program.
-
+        if args.question_no==4:
+                answer=(param,)
+		sql="SELECT * from Client where phone = '%s;';"
+		mycursor.execute(sql, answer)
 
 	# Question 5: Find the total working hours of each administrator. Display the administrators’ 
 	# employee ids, names, and total working hours in ascending order of the total working hours. 
@@ -82,6 +85,10 @@ def main():
 	# Question 6: Find the technical supports that specialize a specified model. Display the names 
 	# of those technical supports. The specified model no should be a parameter input through 
 	# the main program.
+	if args.question_no==6:
+                answer=(param,)
+		sql="SELECT tech.name FROM TechnicalSupport as tech, Specializes as spec WHERE spec.modelNo = '%s' AND tech.empID = spec.empID;" 
+		mycursor.execute(sql, answer)
 
 
 	# Question 7: Order the salesmen with descending order of their average commission rates. 
@@ -97,7 +104,9 @@ def main():
 	#		Administrator		10
 	#		Salesmen			40
 	#		Technicians			20
-
+        #if args.question_no==8:
+	#	sql="#" 
+	#	mycursor.execute(sql)
 
 	# --------------------------------------------------------------------------------------------------------
 	# End of "Parametrized queries".
