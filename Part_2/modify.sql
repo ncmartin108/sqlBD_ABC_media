@@ -32,6 +32,11 @@ UPDATE Salesman
 SET name = 'Chris'
 WHERE name = 'Chris Valencia';
 
+UPDATE Purchases
+SET comissionRate = 0.02
+WHERE clientID = 22;
+
+
 # Add new values to Salesman table to test.
 INSERT INTO Salesman
 VALUES (457, 'Stephen', 'M');
@@ -56,3 +61,26 @@ VALUES (771, 'Michael', 'M');
 
 INSERT INTO Salesman
 VALUES (300, 'Taylor', 'M');
+
+# Add new values to Purchases table to test comission rate.
+INSERT INTO Purchases
+VALUES (22, 22, 231, 0.02);
+
+INSERT INTO Purchases
+VALUES (45, 79, 231, 0.03);
+
+INSERT INTO Purchases
+VALUES (45, 79, 234, 0.02);
+
+INSERT INTO Purchases
+VALUES (23, 970, 234, 0.04);
+
+INSERT INTO Purchases
+VALUES (15, 553, 230, 0.03);
+
+INSERT INTO Purchases
+VALUES (22, 553, 230, 0.04);
+
+INSERT INTO Purchases
+VALUES (23, 1228, 233, 0.03);
+

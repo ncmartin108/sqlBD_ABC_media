@@ -66,7 +66,7 @@ def main():
 	# should be in the ascending order of the salesmen name. If multiple salesmen have the same name, 
 	# show all the attribute values for those salesmen.
 	if args.question_no==3:
-		sql = "SELECT;"
+		sql = "SELECT FROM WHERE;"
 		mycursor.execute(sql)
 	
 	# Question 4: Find the clients with a given phone no. The phone no should be a parameter input 
@@ -84,11 +84,11 @@ def main():
 	# the main program.
 
 
-
 	# Question 7: Order the salesmen with descending order of their average commission rates. 
 	# Display each salesman’s name and the average commission rate.
-
-
+	if args.question_no == 7:
+		sql = "SELECT S.name, AVG(P.comissionRate) AS Avg_CommissionRate FROM Salesman AS S NATURAL JOIN Purchases AS P GROUP BY P.empId ORDER BY AVG(P.comissionRate) DESC;"
+		mycursor.execute(sql)
 
 	# Question 8: Calculate the number of administrators, salesmen, and technical supports. 
 	# Display the results in the following format.

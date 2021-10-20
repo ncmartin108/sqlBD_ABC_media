@@ -30,5 +30,12 @@ order by total asc;
 # Peter 1
 SELECT DISTINCT S.name, COUNT(S.name) AS cnt
 FROM Salesman AS S
-GROUP BY name
-ORDER BY name ASC;
+GROUP BY S.name
+ORDER BY S.name ASC;
+
+# Question 7: Order the salesmen with descending order of their average commission rates. 
+# Display each salesman’s name and the average commission rate.
+SELECT S.name, AVG(P.comissionRate) AS Avg_CommissionRate, empId
+FROM Salesman AS S NATURAL JOIN Purchases AS P
+GROUP BY P.empId
+ORDER BY AVG(P.comissionRate) DESC;
