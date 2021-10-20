@@ -56,6 +56,7 @@ def main():
 		answer=(param,)
 		mycursor.execute(sql,answer)
 	
+
 	# Question 2: Find the digital displays with a given scheduler system. Show their serial nos, 
 	# model nos, and the names of technical supports who specialize their models. The scheduler system
 	# should be a parameter input through the main program.
@@ -63,6 +64,7 @@ def main():
 		sql="SELECT serialNo, Specializes.modelNo, name FROM DigitalDisplay NATURAL JOIN TechnicalSupport NATURAL JOIN Specializes WHERE schedulerSystem = %s;"
 		answer=(param,)
 		mycursor.execute(sql,answer)
+
 
 	# Question 3: List the distinct names of all salesmen and the number of salesmen with that name. The output 
 	# should be in the ascending order of the salesmen name. If multiple salesmen have the same name, 
@@ -101,12 +103,14 @@ def main():
 		sql="SELECT * from Client where phone = '%s;';"
 		mycursor.execute(sql, answer)
 
+
 	# Question 5: Find the total working hours of each administrator. Display the administrators’ 
 	# employee ids, names, and total working hours in ascending order of the total working hours. 
 	if args.question_no==5:
 		sql="SELECT empId, name, SUM(hours) AS total FROM AdmWorkHours NATURAL JOIN Administrator GROUP BY empId , name ORDER BY SUM(hours) ASC;" 
 		mycursor.execute(sql)
 	
+
 	# Question 6: Find the technical supports that specialize a specified model. Display the names 
 	# of those technical supports. The specified model no should be a parameter input through 
 	# the main program.
@@ -122,6 +126,7 @@ def main():
 		sql = "SELECT S.name, AVG(P.comissionRate) AS Avg_CommissionRate FROM Salesman AS S NATURAL JOIN Purchases AS P GROUP BY P.empId ORDER BY AVG(P.comissionRate) DESC;"
 		mycursor.execute(sql)
 
+
 	# Question 8: Calculate the number of administrators, salesmen, and technical supports. 
 	# Display the results in the following format.
 	#		Role				cnt
@@ -136,6 +141,7 @@ def main():
 	# --------------------------------------------------------------------------------------------------------
 	# End of "Parametrized queries".
 	# --------------------------------------------------------------------------------------------------------
+
 
 	# Cursor object has a fetchall() method to fetch all the records present 
 	# in the results table.
