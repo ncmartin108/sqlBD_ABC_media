@@ -18,44 +18,82 @@ import PySimpleGUI as py_sg
 # Sets a theme.
 py_sg.theme('LightBrown1')
 
-# This section modifies the window layout, text and buttons.
-layout = [
-    [py_sg.Text("Database Login")],
-    [py_sg.Text("Enter name of database:"), py_sg.InputText(key='-DB-')],
-    [py_sg.Text("Enter username:"), py_sg.InputText(key='-Uname-')],
-    [py_sg.Text("Enter password:"), py_sg.Input(password_char='*', key='-PW-')],
-    [py_sg.Button("Login"), py_sg.Button("Reset"), py_sg.Exit()]
+# In this section we will create the login window. The layout is where we
+# modify the window layout, text and buttons that appear.
+def make_loginwin():
+    layout = [
+        [py_sg.Text("Database Login")],
+        [py_sg.Text("Enter name of database:"), py_sg.InputText(key='-DB-')],
+        [py_sg.Text("Enter username:"), py_sg.InputText(key='-Uname-')],
+        [py_sg.Text("Enter password:"), py_sg.Input(password_char='*', key='-PW-')],
+        [py_sg.Button("Login"), py_sg.Button("Reset"), py_sg.Exit()]
     ]
+    # Creates the login window, with the layout as defined above.
+    return py_sg.Window("Project Part 3", layout, finalize=True)
 
-# Creates the main window, with the layout as defined above.
-window = py_sg.Window("Project Part 3", layout)
 
-# Creates the event loop.
-while True:
-    event, values = window.read()
+# In this second section we create the second window with menus. In this window
+# the person will interact directly with the database after logging in.
+def make_dbwin():
+    layout = [
+        [py_sg.Text("Main Database Menu")],
+        [py_sg.Button("Logout")]
+        ]
+    # Creates the database interaction window, with the layout as specified above.
+    return py_sg.Window("Project Part 3", layout, finalize=True)
+
+
+# Main part of the program to open and run the windows.
+def main():
+    # Start with only the login window active.
+    window2 = None
+    window1 = make_loginwin()
     
-    # This ends the program if the user closes the window or presses the Exit button.
-    if event in ('Exit', py_sg.WIN_CLOSED):
-        break
-
-    # This will save the values input in the login window.
-    elif event == 'Login':
-        db_name = values['-DB-']
-        username = values['-Uname-']
-        passwd = values['-PW-']
-
-        # TEMP PRINT to make sure that we saved the input
-        print(db_name, '\t', username, '\t' , passwd)
-
-    # This resets the text just typed into the window.
-    elif event == 'Reset':
-        window['-DB-'].update('')
-        window['-Uname-'].update('')
-        window['-PW-'].update('')
-        
+    # Creates the event loop.
+    while True:
+        window, event, values = py_sg.read_all_windows()
     
-# Close up the window.
-window.close()
+        # This ends the program if the user closes the login window or presses the Exit button.
+        if window == window1 and event == py_sg.WIN_CLOSED or window == window1 and event == 'Exit':
+            break
+
+        # This will save the values input in the login window. Also, we will launch the
+        # second window here.
+        elif event == 'Login' and not window2:
+            db_name = values['-DB-']
+            username = values['-Uname-']
+            passwd = values['-PW-']
+
+            # TEMP PRINT to make sure that we saved the input
+            print(db_name, '\t', username, '\t' , passwd)
+            # Hide login window to stop interaction with it.
+            window1.hide()
+            # Create the database interaction window.
+            window2 = make_dbwin()
+
+        # This resets the text just typed into the login window.
+        elif window == window1 and event == 'Reset':
+            window['-DB-'].update('')
+            window['-Uname-'].update('')
+            window['-PW-'].update('')
+
+        # This will close window 2 if logout.
+        elif window == window2 and event == 'Logout':
+            window2.close()
+            window2 = None
+            window1.un_hide()
+
+        # This will forcibly close window 2 if the user clicks X.
+        elif window == window2 and event == py_sg.WIN_CLOSED:
+            window2.close()
+            window2 = None
+            window1.un_hide()
+
+    # Close window 1. 
+    window1.close()
 
 
+# Run main program.
+if __name__ == '__main__':
+    main()
 
