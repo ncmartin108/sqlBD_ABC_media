@@ -22,25 +22,55 @@ py_sg.theme('LightBrown1')
 # modify the window layout, text and buttons that appear.
 def make_loginwin():
     layout = [
-        [py_sg.Text("Database Login")],
         [py_sg.Text("Enter name of database:"), py_sg.InputText(key='-DB-')],
         [py_sg.Text("Enter username:"), py_sg.InputText(key='-Uname-')],
         [py_sg.Text("Enter password:"), py_sg.Input(password_char='*', key='-PW-')],
         [py_sg.Button("Login"), py_sg.Button("Reset"), py_sg.Exit()]
     ]
     # Creates the login window, with the layout as defined above.
-    return py_sg.Window("Project Part 3", layout, finalize=True)
+    return py_sg.Window("Database Login", layout, finalize=True)
 
 
 # In this second section we create the second window with menus. In this window
 # the person will interact directly with the database after logging in.
 def make_dbwin():
-    layout = [
-        [py_sg.Text("Main Database Menu")],
-        [py_sg.Button("Logout")]
+    # We will create the menu tabs first.
+    tab1_layout = [
         ]
+    #tab1_layout = [
+     #   [py_sg.Table(values=select_allDisplays(), headings=table_headings(),max_col_width=25,
+      #               auto_size_columns=True, display_row_numbers=True, justification='right',
+       #              num_rows=30, alternating_row_color='light blue',key='-TABLE-', row_height=35)]
+        #]
+    tab2_layout = [
+        ]
+    tab3_layout = [
+        ]
+    tab4_layout = [
+        ]
+    tab5_layout = [
+        ]
+    layout = [
+        [py_sg.TabGroup([[py_sg.Tab('1. Show Digital Displays', tab1_layout),
+                          py_sg.Tab('2. Search Digital Displays', tab2_layout),
+                          py_sg.Tab('3. Insert a Digital Display', tab3_layout),
+                          py_sg.Tab('4. Delete a Digital Display', tab4_layout),
+                          py_sg.Tab('5. Update a Digital Display', tab5_layout)]])],
+        [py_sg.Output(size=(100,30))],
+        [py_sg.Button('Logout')]
+        ]
+   
     # Creates the database interaction window, with the layout as specified above.
-    return py_sg.Window("Project Part 3", layout, finalize=True)
+    return py_sg.Window("Main Database Menu", layout, finalize=True)
+
+
+# This method is for menu option 1: Display all displays. It will query the database and then return
+# all available tuples.
+def select_allDisplays():
+    return [0, 10]  # temp data until we add a function
+
+def table_headings():
+    return ['serialNo', 'schedulerSystem','ModelNo']
 
 
 # Main part of the program to open and run the windows.
