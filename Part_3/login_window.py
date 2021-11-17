@@ -39,6 +39,7 @@ def make_loginwin():
 def make_dbwin():
     # We will create the menu tabs first.
     tab1_layout = [
+
         ]
     #tab1_layout = [
      #   [py_sg.Table(values=select_allDisplays(), headings=table_headings(),max_col_width=25,
@@ -46,6 +47,8 @@ def make_dbwin():
        #              num_rows=30, alternating_row_color='light blue',key='-TABLE-', row_height=35)]
         #]
     tab2_layout = [
+         [py_sg.Text("enter Scheduler System type:"), py_sg.InputText(key='-SS-')],
+         [py_sg.Output(size=(100,30))],
         ]
     tab3_layout = [
         ]
@@ -59,7 +62,7 @@ def make_dbwin():
                           py_sg.Tab('3. Insert a Digital Display', tab3_layout),
                           py_sg.Tab('4. Delete a Digital Display', tab4_layout),
                           py_sg.Tab('5. Update a Digital Display', tab5_layout)]])],
-        [py_sg.Output(size=(100,30))],
+        
         [py_sg.Button('Logout')]
         ]
    
@@ -125,9 +128,9 @@ def main():
             window2 = make_dbwin()
 
             # Create the database connection and login.
-            mydb = database_conn(db_name, username, passwd, hostname)
+            #mydb = database_conn(db_name, username, passwd, hostname)
             # Create a cursor object to manipulate database.
-            mycursor = mydb.cursor(buffered=True)
+            #mycursor = mydb.cursor(buffered=True)
 
         # This resets the text just typed into the login window.
         elif window == window1 and event == 'Reset':
