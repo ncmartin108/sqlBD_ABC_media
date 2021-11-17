@@ -157,7 +157,7 @@ def main():
         # Check the tab events.
         elif window == window2 and event == 'Search':
              SchedulerSystem = values['-SS-']
-             sql= "SELECT * FROM DigitalSystem WHERE schedulerSystem = ' "+ SchedulerSystem + ";"
+             sql= "SELECT * FROM DigitalDisplay WHERE schedulerSystem = '"+ SchedulerSystem + "';"
              mycursor.execute(sql)
              myresults=mycursor.fetchall()
              print(myresults)
