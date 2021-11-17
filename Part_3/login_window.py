@@ -25,6 +25,7 @@ py_sg.theme('LightBrown1')
 def make_loginwin():
     layout = [
         [py_sg.Text("Enter name of database:"), py_sg.InputText(key='-DB-')],
+        [py_sg.Text("Enter the hostname:"), py_sg.InputText(key='-HName-')],
         [py_sg.Text("Enter username:"), py_sg.InputText(key='-Uname-')],
         [py_sg.Text("Enter password:"), py_sg.Input(password_char='*', key='-PW-')],
         [py_sg.Button("Login"), py_sg.Button("Reset"), py_sg.Exit()]
@@ -67,11 +68,11 @@ def make_dbwin():
 
 
 # This method creates the database connection.
-def database_conn(db_name, username, passwd):
+def database_conn(db_name, username, passwd, hostname):
     mydb = None
     try:
         mydb = mysql.connector.connect(
-            host = 'localhost',
+            host = hostname,
             user = username,
             password = passwd,
             database = db_name )
@@ -114,6 +115,7 @@ def main():
             db_name = values['-DB-']
             username = values['-Uname-']
             passwd = values['-PW-']
+            hostname = values['-HName-']
 
             # TEMP PRINT to make sure that we saved the input
             print(db_name, '\t', username, '\t' , passwd)
@@ -123,7 +125,7 @@ def main():
             window2 = make_dbwin()
 
             # Create the database connection and login.
-            mydb = database_conn(db_name, username, passwd)
+            mydb = database_conn(db_name, username, passwd, hostname)
             # Create a cursor object to manipulate database.
             mycursor = mydb.cursor(buffered=True)
 
