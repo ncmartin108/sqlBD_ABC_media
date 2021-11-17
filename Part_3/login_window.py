@@ -47,7 +47,7 @@ def make_dbwin():
        #              num_rows=30, alternating_row_color='light blue',key='-TABLE-', row_height=35)]
         #]
     tab2_layout = [
-         [py_sg.Text("enter Scheduler System type:"), py_sg.InputText(key='-SS-')],
+         [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-SS-'),py_sg.Button('Search')],
          [py_sg.Output(size=(100,30))],
         ]
     tab3_layout = [
@@ -115,11 +115,15 @@ def main():
         # This will save the values input in the login window. Also, we will launch the
         # second window here.
         elif event == 'Login' and not window2:
-            db_name = values['-DB-']
-            username = values['-Uname-']
-            passwd = values['-PW-']
-            hostname = values['-HName-']
-
+            db_name ='abc_media_db'
+            username ='root'
+            passwd = '1moreyearofschool'
+            hostname ='localhost'
+##            db_name = values['-DB']
+##            username = values['-Uname-']
+##            passwd = values['-PW-']
+##            hostname = values['-HName-']
+            
             # TEMP PRINT to make sure that we saved the input
             print(db_name, '\t', username, '\t' , passwd)
             # Hide login window to stop interaction with it.
@@ -128,9 +132,9 @@ def main():
             window2 = make_dbwin()
 
             # Create the database connection and login.
-            #mydb = database_conn(db_name, username, passwd, hostname)
+            mydb = database_conn(db_name, username, passwd, hostname)
             # Create a cursor object to manipulate database.
-            #mycursor = mydb.cursor(buffered=True)
+            mycursor = mydb.cursor(buffered=True)
 
         # This resets the text just typed into the login window.
         elif window == window1 and event == 'Reset':
@@ -151,11 +155,12 @@ def main():
             window1.un_hide()
 
         # Check the tab events.
-        #elif window == window2 and event == 'TAB1':
-        
-
-    # Close window 1. 
-    window1.close()
+        elif window == window2 and event == 'Search':
+             SchedulerSystem = values['-SS-']
+             sql= "SELECT * FROM DigitalSystem WHERE schedulerSystem = ' "+ SchedulerSystem + ";"
+             mycursor.execute(sql)
+             myresults=mycursor.fetchall()
+             print(myresults)
 
 
 # Run main program.
