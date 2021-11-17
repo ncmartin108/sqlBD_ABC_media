@@ -1,4 +1,5 @@
 import PySimpleGUI as py_sg
+import mysql.connector
 
 #---------------------------------------------------------------------------
 # Project Part 3
@@ -17,6 +18,7 @@ import PySimpleGUI as py_sg
 
 # Sets a theme.
 py_sg.theme('LightBrown1')
+
 
 # In this section we will create the login window. The layout is where we
 # modify the window layout, text and buttons that appear.
@@ -51,7 +53,7 @@ def make_dbwin():
     tab5_layout = [
         ]
     layout = [
-        [py_sg.TabGroup([[py_sg.Tab('1. Show Digital Displays', tab1_layout),
+        [py_sg.TabGroup([[py_sg.Tab('1. Show Digital Displays', tab1_layout, key= '-TAB1'),
                           py_sg.Tab('2. Search Digital Displays', tab2_layout),
                           py_sg.Tab('3. Insert a Digital Display', tab3_layout),
                           py_sg.Tab('4. Delete a Digital Display', tab4_layout),
@@ -64,11 +66,30 @@ def make_dbwin():
     return py_sg.Window("Main Database Menu", layout, finalize=True)
 
 
+# This method creates the database connection.
+def database_conn(db_name, username, passwd):
+    mydb = None
+    try:
+        mydb = mysql.connector.connect(
+            host = 'localhost',
+            user = username,
+            password = passwd,
+            database = db_name )
+        if mydb.is_connected():
+            print('Connected to MySQL database')
+    except Error as e:
+        print(e)
+
+    return mydb
+
+
 # This method is for menu option 1: Display all displays. It will query the database and then return
 # all available tuples.
 def select_allDisplays():
     return [0, 10]  # temp data until we add a function
 
+
+# This method creates the table headings for menu option 1.
 def table_headings():
     return ['serialNo', 'schedulerSystem','ModelNo']
 
@@ -101,6 +122,11 @@ def main():
             # Create the database interaction window.
             window2 = make_dbwin()
 
+            # Create the database connection and login.
+            mydb = database_conn(db_name, username, passwd)
+            # Create a cursor object to manipulate database.
+            mycursor = mydb.cursor(buffered=True)
+
         # This resets the text just typed into the login window.
         elif window == window1 and event == 'Reset':
             window['-DB-'].update('')
@@ -118,6 +144,10 @@ def main():
             window2.close()
             window2 = None
             window1.un_hide()
+
+        # Check the tab events.
+        #elif window == window2 and event == 'TAB1':
+        
 
     # Close window 1. 
     window1.close()
