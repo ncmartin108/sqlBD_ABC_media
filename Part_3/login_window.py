@@ -1,5 +1,6 @@
 import PySimpleGUI as py_sg
 import mysql.connector
+from tabulate import tabulate
 
 #---------------------------------------------------------------------------
 # Project Part 3
@@ -39,16 +40,10 @@ def make_loginwin():
 def make_dbwin():
     # We will create the menu tabs first.
     tab1_layout = [
-
+        [py_sg.Text("Show all Digital Displays?"), py_sg.Button('Yes')]
         ]
-    #tab1_layout = [
-     #   [py_sg.Table(values=select_allDisplays(), headings=table_headings(),max_col_width=25,
-      #               auto_size_columns=True, display_row_numbers=True, justification='right',
-       #              num_rows=30, alternating_row_color='light blue',key='-TABLE-', row_height=35)]
-        #]
     tab2_layout = [
-         [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-SS-'),py_sg.Button('Search')],
-         [py_sg.Output(size=(100,30))],
+         [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-SS-'), py_sg.Button('Search')]
         ]
     tab3_layout = [
         ]
@@ -62,7 +57,7 @@ def make_dbwin():
                           py_sg.Tab('3. Insert a Digital Display', tab3_layout),
                           py_sg.Tab('4. Delete a Digital Display', tab4_layout),
                           py_sg.Tab('5. Update a Digital Display', tab5_layout)]])],
-        
+        [py_sg.Output(size=(100,30))],
         [py_sg.Button('Logout')]
         ]
    
@@ -95,7 +90,7 @@ def select_allDisplays():
 
 # This method creates the table headings for menu option 1.
 def table_headings():
-    return ['serialNo', 'schedulerSystem','ModelNo']
+    return "serialNo \t schedulerSystem \t modelNo"
 
 
 # Main part of the program to open and run the windows.
@@ -154,14 +149,24 @@ def main():
             window2 = None
             window1.un_hide()
 
+        # Check Tab 1 event:
+        elif window == window2 and event == 'Yes':
+            sql = "SELECT * FROM DigitalDisplay;"
+            mycursor.execute(sql)
+            answer = mycursor.fetchall()
+            print(table_headings())
+            print(tabulate(answer))
+            
         # Check the tab events.
         elif window == window2 and event == 'Search':
              SchedulerSystem = values['-SS-']
              sql= "SELECT * FROM DigitalDisplay WHERE schedulerSystem = '"+ SchedulerSystem + "';"
              mycursor.execute(sql)
              myresults=mycursor.fetchall()
-             print(myresults)
+             print(table_headings())
+             print(tabulate(myresults))
 
+    window1.close()
 
 # Run main program.
 if __name__ == '__main__':
