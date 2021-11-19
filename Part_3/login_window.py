@@ -57,7 +57,8 @@ def make_dbwin():
                           py_sg.Tab('3. Insert a Digital Display', tab3_layout),
                           py_sg.Tab('4. Delete a Digital Display', tab4_layout),
                           py_sg.Tab('5. Update a Digital Display', tab5_layout)]])],
-        [py_sg.Output(size=(100,30))],
+        [py_sg.Output(size=(100,30), key = '_output_')],
+        [py_sg.Button('Clear')],
         [py_sg.Button('Logout')]
         ]
    
@@ -91,7 +92,6 @@ def select_allDisplays():
 # This method creates the table headings for menu option 1.
 def table_headings():
     return "serialNo \t schedulerSystem \t modelNo"
-
 
 # Main part of the program to open and run the windows.
 def main():
@@ -142,6 +142,9 @@ def main():
             window2.close()
             window2 = None
             window1.un_hide()
+
+        elif window == window2 and event == 'Clear':
+            window.FindElement('_output_').Update('')
 
         # This will forcibly close window 2 if the user clicks X.
         elif window == window2 and event == py_sg.WIN_CLOSED:
