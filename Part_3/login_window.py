@@ -45,7 +45,6 @@ def make_dbwin():
     tab2_layout = [
 
          [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-SS-'), py_sg.Button('Search')],
-         [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-SS-'),py_sg.Button('Search')],
          
 
         ]
@@ -196,7 +195,8 @@ def main():
             test=[] 
             if searchres ==test:
                 check=False
-            print(searchres)
+            print(table_headings())
+            print(tabulate(searchres))
 
             try:
                 sql= "INSERT INTO DigitalDisplay VALUES ('"+AddSerialNumber+"','"+AddSchedulerSystem+"','"+AddModelNumber+"');"
@@ -207,14 +207,15 @@ def main():
             except:
                #insert code for new window asking for model data to be added.
                 if check==False:
-                     print("modelno not found")
+                     print("Could not insert Digital display because modelno not found")
             finally:
                 if check==True:
                     print("modelno added")
             sql1= "SELECT * FROM DigitalDisplay;"    
             mycursor.execute(sql1)
             myresults=mycursor.fetchall()
-            print(myresults)
+            print(table_headings())
+            print(tabulate(myresults))
 
 
 
