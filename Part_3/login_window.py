@@ -43,9 +43,17 @@ def make_dbwin():
         [py_sg.Text("Show all Digital Displays?"), py_sg.Button('Yes')]
         ]
     tab2_layout = [
-         [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-SS-'), py_sg.Button('Search')]
+
+         [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-SS-'), py_sg.Button('Search')],
+         [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-SS-'),py_sg.Button('Search')],
+         
+
         ]
     tab3_layout = [
+         [py_sg.Text("Enter Serial Number:"), py_sg.InputText(key='-AddSN-')],
+         [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-AddSS-')],
+         [py_sg.Text("Enter ModelNo Number:"), py_sg.InputText(key='-AddMN-'),py_sg.Button('Add')],
+         
         ]
     tab4_layout = [
         ]
@@ -57,9 +65,10 @@ def make_dbwin():
                           py_sg.Tab('3. Insert a Digital Display', tab3_layout),
                           py_sg.Tab('4. Delete a Digital Display', tab4_layout),
                           py_sg.Tab('5. Update a Digital Display', tab5_layout)]])],
+
         [py_sg.Output(size=(100,30), key = '_output_')],
         [py_sg.Button('Clear')],
-        [py_sg.Button('Logout')]
+        [py_sg.Button('Logout')],
         ]
    
     # Creates the database interaction window, with the layout as specified above.
@@ -152,6 +161,7 @@ def main():
             window2 = None
             window1.un_hide()
 
+
         # Check Tab 1 event:
         elif window == window2 and event == 'Yes':
             sql = "SELECT * FROM DigitalDisplay;"
@@ -161,6 +171,9 @@ def main():
             print(tabulate(answer))
             
         # Check the tab events.
+
+        # Check the tab event search.
+
         elif window == window2 and event == 'Search':
              SchedulerSystem = values['-SS-']
              sql= "SELECT * FROM DigitalDisplay WHERE schedulerSystem = '"+ SchedulerSystem + "';"
@@ -168,8 +181,42 @@ def main():
              myresults=mycursor.fetchall()
              print(table_headings())
              print(tabulate(myresults))
+             window1.close()
 
-    window1.close()
+        #check the tab event add.
+        elif window == window2 and event == 'Add':
+            AddSerialNumber = values['-AddSN-']
+            AddSchedulerSystem = values['-AddSS-']
+            AddModelNumber = values['-AddMN-']
+            check=True
+            sql1= "SELECT modelNo FROM Model WHERE modelNo = '"+AddModelNumber+"';"
+            print(sql1)
+            mycursor.execute(sql1)
+            searchres=mycursor.fetchall()
+            test=[] 
+            if searchres ==test:
+                check=False
+            print(searchres)
+
+            try:
+                sql= "INSERT INTO DigitalDisplay VALUES ('"+AddSerialNumber+"','"+AddSchedulerSystem+"','"+AddModelNumber+"');"
+                #sql= "INSERT INTO DigitalDisplay VALUES ('serial2','random','VH356693');"
+                mycursor.execute(sql)
+                mydb.commit()
+                check==True
+            except:
+               #insert code for new window asking for model data to be added.
+                if check==False:
+                     print("modelno not found")
+            finally:
+                if check==True:
+                    print("modelno added")
+            sql1= "SELECT * FROM DigitalDisplay;"    
+            mycursor.execute(sql1)
+            myresults=mycursor.fetchall()
+            print(myresults)
+
+
 
 # Run main program.
 if __name__ == '__main__':
