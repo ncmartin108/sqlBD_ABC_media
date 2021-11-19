@@ -1,4 +1,4 @@
-import PySimpleGUI as py_sg
+import PySimpleGUI as sg
 import mysql.connector
 from tabulate import tabulate
 
@@ -18,21 +18,21 @@ from tabulate import tabulate
 #---------------------------------------------------------------------------
 
 # Sets a theme.
-py_sg.theme('LightBrown1')
+sg.theme('LightBrown1')
 
 
 # In this section we will create the login window. The layout is where we
 # modify the window layout, text and buttons that appear.
 def make_loginwin():
     layout = [
-        [py_sg.Text("Enter name of database:"), py_sg.InputText(key='-DB-')],
-        [py_sg.Text("Enter the hostname:"), py_sg.InputText(key='-HName-')],
-        [py_sg.Text("Enter username:"), py_sg.InputText(key='-Uname-')],
-        [py_sg.Text("Enter password:"), py_sg.Input(password_char='*', key='-PW-')],
-        [py_sg.Button("Login"), py_sg.Button("Reset"), py_sg.Exit()]
+        [sg.Text("Enter name of database:"), sg.InputText(key='-DB-')],
+        [sg.Text("Enter the hostname:"), sg.InputText(key='-HName-')],
+        [sg.Text("Enter username:"), sg.InputText(key='-Uname-')],
+        [sg.Text("Enter password:"), sg.Input(password_char='*', key='-PW-')],
+        [sg.Button("Login", bind_return_key=True), sg.Button("Reset"), sg.Exit()]
     ]
     # Creates the login window, with the layout as defined above.
-    return py_sg.Window("Database Login", layout, finalize=True)
+    return sg.Window("Database Login", layout, finalize=True)
 
 
 # In this second section we create the second window with menus. In this window
@@ -40,9 +40,10 @@ def make_loginwin():
 def make_dbwin():
     # We will create the menu tabs first.
     tab1_layout = [
-        [py_sg.Text("Show all Digital Displays?"), py_sg.Button('Yes')]
+        [sg.Text("Show all Digital Displays?"), sg.Button('Yes')]
         ]
     tab2_layout = [
+<<<<<<< Updated upstream
 
          [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-SS-'), py_sg.Button('Search')],
          
@@ -53,12 +54,21 @@ def make_dbwin():
          [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-AddSS-')],
          [py_sg.Text("Enter ModelNo Number:"), py_sg.InputText(key='-AddMN-'),py_sg.Button('Add')],
          
+=======
+         [sg.Text("Enter Scheduler System type:"), sg.InputText(key='-SS-'), sg.Button('Search', bind_return_key=True)]
+        ]
+    tab3_layout = [
+         [sg.Text("Enter Serial Number:"), sg.InputText(key='-AddSN-')],
+         [sg.Text("Enter Scheduler System type:"), sg.InputText(key='-AddSS-')],
+         [sg.Text("Enter ModelNo Number:"), sg.InputText(key='-AddMN-'),sg.Button('Add')],
+>>>>>>> Stashed changes
         ]
     tab4_layout = [
         ]
     tab5_layout = [
         ]
     layout = [
+<<<<<<< Updated upstream
         [py_sg.TabGroup([[py_sg.Tab('1. Show Digital Displays', tab1_layout, key= '-TAB1'),
                           py_sg.Tab('2. Search Digital Displays', tab2_layout),
                           py_sg.Tab('3. Insert a Digital Display', tab3_layout),
@@ -68,10 +78,19 @@ def make_dbwin():
         [py_sg.Output(size=(100,30), key = '_output_')],
         [py_sg.Button('Clear')],
         [py_sg.Button('Logout')],
+=======
+        [sg.TabGroup([[sg.Tab('1. Show Digital Displays', tab1_layout, key= '-TAB1-'),
+                          sg.Tab('2. Search Digital Displays', tab2_layout),
+                          sg.Tab('3. Insert a Digital Display', tab3_layout),
+                          sg.Tab('4. Delete a Digital Display', tab4_layout),
+                          sg.Tab('5. Update a Digital Display', tab5_layout)]])],
+        [sg.Output(size=(80,30), key = '-Output-')],
+        [sg.Button('Logout'), sg.Button('Clear')]
+>>>>>>> Stashed changes
         ]
    
     # Creates the database interaction window, with the layout as specified above.
-    return py_sg.Window("Main Database Menu", layout, finalize=True)
+    return sg.Window("Main Database Menu", layout, finalize=True)
 
 
 # This method creates the database connection.
@@ -87,19 +106,12 @@ def database_conn(db_name, username, passwd, hostname):
             print('Connected to MySQL database')
     except Error as e:
         print(e)
-
     return mydb
-
-
-# This method is for menu option 1: Display all displays. It will query the database and then return
-# all available tuples.
-def select_allDisplays():
-    return [0, 10]  # temp data until we add a function
 
 
 # This method creates the table headings for menu option 1.
 def table_headings():
-    return "serialNo \t schedulerSystem \t modelNo"
+    return "serialNo   schedulerSystem   modelNo"
 
 # Main part of the program to open and run the windows.
 def main():
@@ -109,11 +121,17 @@ def main():
     
     # Creates the event loop.
     while True:
-        window, event, values = py_sg.read_all_windows()
+        window, event, values = sg.read_all_windows()
     
         # This ends the program if the user closes the login window or presses the Exit button.
-        if window == window1 and event == py_sg.WIN_CLOSED or window == window1 and event == 'Exit':
+        if window == window1 and event == sg.WIN_CLOSED or window == window1 and event == 'Exit':
             break
+            # Close the sql connection.
+            if(mydb.is_connected()):
+                mydb.close()
+                mycursor.close()
+                print("MySQL database connection is closed.")
+    
 
         # This will save the values input in the login window. Also, we will launch the
         # second window here.
@@ -144,6 +162,7 @@ def main():
             window['-DB-'].update('')
             window['-Uname-'].update('')
             window['-PW-'].update('')
+            window['-HName-'].update('')
 
         # This will close window 2 if logout.
         elif window == window2 and event == 'Logout':
@@ -152,10 +171,14 @@ def main():
             window1.un_hide()
 
         elif window == window2 and event == 'Clear':
+<<<<<<< Updated upstream
             window.FindElement('_output_').Update('')
+=======
+            window['-Output-'].Update('')
+>>>>>>> Stashed changes
 
         # This will forcibly close window 2 if the user clicks X.
-        elif window == window2 and event == py_sg.WIN_CLOSED:
+        elif window == window2 and event == sg.WIN_CLOSED:
             window2.close()
             window2 = None
             window1.un_hide()
@@ -169,25 +192,34 @@ def main():
             print(table_headings())
             print(tabulate(answer))
             
+<<<<<<< Updated upstream
         # Check the tab events.
 
         # Check the tab event search.
 
+=======
+        # Check Tab2 event.
+>>>>>>> Stashed changes
         elif window == window2 and event == 'Search':
              SchedulerSystem = values['-SS-']
-             sql= "SELECT * FROM DigitalDisplay WHERE schedulerSystem = '"+ SchedulerSystem + "';"
-             mycursor.execute(sql)
+             sql1 = "SELECT * FROM DigitalDisplay WHERE schedulerSystem = '"+ SchedulerSystem + "';"
+             mycursor.execute(sql1)
              myresults=mycursor.fetchall()
              print(table_headings())
              print(tabulate(myresults))
              window1.close()
 
+<<<<<<< Updated upstream
         #check the tab event add.
+=======
+        # check the tab event add.
+>>>>>>> Stashed changes
         elif window == window2 and event == 'Add':
             AddSerialNumber = values['-AddSN-']
             AddSchedulerSystem = values['-AddSS-']
             AddModelNumber = values['-AddMN-']
             check=True
+<<<<<<< Updated upstream
             sql1= "SELECT modelNo FROM Model WHERE modelNo = '"+AddModelNumber+"';"
             print(sql1)
             mycursor.execute(sql1)
@@ -197,6 +229,16 @@ def main():
                 check=False
             print(table_headings())
             print(tabulate(searchres))
+=======
+            sql2 = "SELECT modelNo FROM Model WHERE modelNo = '"+AddModelNumber+"';"
+            print(sql2)
+            mycursor.execute(sql2)
+            searches=mycursor.fetchall()
+            test=[] 
+            if searches ==test:
+                check=False
+            print(searches)
+>>>>>>> Stashed changes
 
             try:
                 sql= "INSERT INTO DigitalDisplay VALUES ('"+AddSerialNumber+"','"+AddSchedulerSystem+"','"+AddModelNumber+"');"
@@ -207,17 +249,30 @@ def main():
             except:
                #insert code for new window asking for model data to be added.
                 if check==False:
+<<<<<<< Updated upstream
                      print("Could not insert Digital display because modelno not found")
+=======
+                     print("modelno not found")
+>>>>>>> Stashed changes
             finally:
                 if check==True:
                     print("modelno added")
             sql1= "SELECT * FROM DigitalDisplay;"    
             mycursor.execute(sql1)
             myresults=mycursor.fetchall()
+<<<<<<< Updated upstream
             print(table_headings())
             print(tabulate(myresults))
 
 
+=======
+            print(myresults)
+
+
+    # Finish the program by closing the window.
+    window.close()
+    
+>>>>>>> Stashed changes
 
 # Run main program.
 if __name__ == '__main__':
