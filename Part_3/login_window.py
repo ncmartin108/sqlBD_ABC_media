@@ -43,42 +43,18 @@ def make_dbwin():
         [sg.Text("Show all Digital Displays?"), sg.Button('Yes')]
         ]
     tab2_layout = [
-<<<<<<< Updated upstream
-
-         [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-SS-'), py_sg.Button('Search')],
-         
-
-        ]
-    tab3_layout = [
-         [py_sg.Text("Enter Serial Number:"), py_sg.InputText(key='-AddSN-')],
-         [py_sg.Text("Enter Scheduler System type:"), py_sg.InputText(key='-AddSS-')],
-         [py_sg.Text("Enter ModelNo Number:"), py_sg.InputText(key='-AddMN-'),py_sg.Button('Add')],
-         
-=======
-         [sg.Text("Enter Scheduler System type:"), sg.InputText(key='-SS-'), sg.Button('Search', bind_return_key=True)]
+         [sg.Text("Enter Scheduler System type:"), sg.InputText(key='-SS-'), sg.Button('Search', bind_return_key=True)],
         ]
     tab3_layout = [
          [sg.Text("Enter Serial Number:"), sg.InputText(key='-AddSN-')],
          [sg.Text("Enter Scheduler System type:"), sg.InputText(key='-AddSS-')],
          [sg.Text("Enter ModelNo Number:"), sg.InputText(key='-AddMN-'),sg.Button('Add')],
->>>>>>> Stashed changes
         ]
     tab4_layout = [
         ]
     tab5_layout = [
         ]
     layout = [
-<<<<<<< Updated upstream
-        [py_sg.TabGroup([[py_sg.Tab('1. Show Digital Displays', tab1_layout, key= '-TAB1'),
-                          py_sg.Tab('2. Search Digital Displays', tab2_layout),
-                          py_sg.Tab('3. Insert a Digital Display', tab3_layout),
-                          py_sg.Tab('4. Delete a Digital Display', tab4_layout),
-                          py_sg.Tab('5. Update a Digital Display', tab5_layout)]])],
-
-        [py_sg.Output(size=(100,30), key = '_output_')],
-        [py_sg.Button('Clear')],
-        [py_sg.Button('Logout')],
-=======
         [sg.TabGroup([[sg.Tab('1. Show Digital Displays', tab1_layout, key= '-TAB1-'),
                           sg.Tab('2. Search Digital Displays', tab2_layout),
                           sg.Tab('3. Insert a Digital Display', tab3_layout),
@@ -86,7 +62,6 @@ def make_dbwin():
                           sg.Tab('5. Update a Digital Display', tab5_layout)]])],
         [sg.Output(size=(80,30), key = '-Output-')],
         [sg.Button('Logout'), sg.Button('Clear')]
->>>>>>> Stashed changes
         ]
    
     # Creates the database interaction window, with the layout as specified above.
@@ -171,18 +146,13 @@ def main():
             window1.un_hide()
 
         elif window == window2 and event == 'Clear':
-<<<<<<< Updated upstream
-            window.FindElement('_output_').Update('')
-=======
             window['-Output-'].Update('')
->>>>>>> Stashed changes
 
         # This will forcibly close window 2 if the user clicks X.
         elif window == window2 and event == sg.WIN_CLOSED:
             window2.close()
             window2 = None
             window1.un_hide()
-
 
         # Check Tab 1 event:
         elif window == window2 and event == 'Yes':
@@ -191,15 +161,8 @@ def main():
             answer = mycursor.fetchall()
             print(table_headings())
             print(tabulate(answer))
-            
-<<<<<<< Updated upstream
-        # Check the tab events.
 
-        # Check the tab event search.
-
-=======
         # Check Tab2 event.
->>>>>>> Stashed changes
         elif window == window2 and event == 'Search':
              SchedulerSystem = values['-SS-']
              sql1 = "SELECT * FROM DigitalDisplay WHERE schedulerSystem = '"+ SchedulerSystem + "';"
@@ -209,36 +172,31 @@ def main():
              print(tabulate(myresults))
              window1.close()
 
-<<<<<<< Updated upstream
-        #check the tab event add.
-=======
         # check the tab event add.
->>>>>>> Stashed changes
         elif window == window2 and event == 'Add':
             AddSerialNumber = values['-AddSN-']
             AddSchedulerSystem = values['-AddSS-']
             AddModelNumber = values['-AddMN-']
             check=True
-<<<<<<< Updated upstream
             sql1= "SELECT modelNo FROM Model WHERE modelNo = '"+AddModelNumber+"';"
             print(sql1)
             mycursor.execute(sql1)
-            searchres=mycursor.fetchall()
+            search_res=mycursor.fetchall()
             test=[] 
-            if searchres ==test:
+            if search_res ==test:
                 check=False
             print(table_headings())
-            print(tabulate(searchres))
-=======
+            print(tabulate(search_res))
+
             sql2 = "SELECT modelNo FROM Model WHERE modelNo = '"+AddModelNumber+"';"
             print(sql2)
             mycursor.execute(sql2)
-            searches=mycursor.fetchall()
+            search_res=mycursor.fetchall()
             test=[] 
-            if searches ==test:
+            if search_res ==test:
                 check=False
-            print(searches)
->>>>>>> Stashed changes
+            print(search_res)
+
 
             try:
                 sql= "INSERT INTO DigitalDisplay VALUES ('"+AddSerialNumber+"','"+AddSchedulerSystem+"','"+AddModelNumber+"');"
@@ -249,30 +207,22 @@ def main():
             except:
                #insert code for new window asking for model data to be added.
                 if check==False:
-<<<<<<< Updated upstream
                      print("Could not insert Digital display because modelno not found")
-=======
                      print("modelno not found")
->>>>>>> Stashed changes
             finally:
                 if check==True:
                     print("modelno added")
             sql1= "SELECT * FROM DigitalDisplay;"    
             mycursor.execute(sql1)
             myresults=mycursor.fetchall()
-<<<<<<< Updated upstream
             print(table_headings())
             print(tabulate(myresults))
-
-
-=======
             print(myresults)
 
 
     # Finish the program by closing the window.
     window.close()
     
->>>>>>> Stashed changes
 
 # Run main program.
 if __name__ == '__main__':
