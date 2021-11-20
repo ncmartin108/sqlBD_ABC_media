@@ -53,7 +53,7 @@ def make_dbwin(db_name, username, passwd, hostname):
 
     # We will create the menu tabs to put into the window first.
     tab1_layout = [[sg.Text("Show all Digital Displays?"), sg.Button('Yes')]] + [
-        [sg.pin(sg.Button(f'{models[i]}', key=f'-{i}-', visible=False)) for i in range(len(models))]]
+        [sg.pin(sg.Button(f'{models[i]}', key=f'-{i}-', visible=False, enable_events=True)) for i in range(len(models))]]
 
     tab2_layout = [[sg.Text("Enter Scheduler System type:"), sg.InputText(key='-SS-'),
                     sg.Button('Search', bind_return_key=True)]]
@@ -164,29 +164,40 @@ def main():
             window1.Finalize()
             window1.un_hide()
 
-        # Check Tab 1 event:
-        elif window == window2 and event == 'Yes':
-            sql = "SELECT * FROM DigitalDisplay;"
-            mycursor.execute(sql)
+        # This small section sets up Tab 1 so that we can display all Digital Displays info
+        # and also display all the information about a specific model upon clicking that model
+        # number button.
+        sql1 = "SELECT * FROM DigitalDisplay;"
+        mycursor.execute(sql1)
+        answer1 = mycursor.fetchall()
+        models = []
+        for i in range(len(answer1)):
+            models.append(answer1[i][2])
+
+        # Checks the event for Tab 1: Show all digital displays.
+        if window == window2 and event == 'Yes':
             print(table_headings())
-            answer = mycursor.fetchall()
-            print(tabulate(answer))
-            models = []
-            for i in range(len(answer)):
-                models.append(answer[i][2])
-                window[f'-{i}-'].update(visible=True)
-                
-##        elif window == window2 and event=='0':
-##            model_num = models[0]
+            print(tabulate(answer1))
+            for j in range(len(answer1)):
+                window[f'-{j}-'].update(visible=True)
+            sg.read_all_windows()
+    
+        # Checks Tab 1 subevents (the model number buttons).      
+        elif window == window2 and event == '0':
+            print("The button works.")
+##            model_num = VH356693
 ##            print(model_num)
 ##            sql2 = "SELECT * FROM Model WHERE modelNo = '" + model_num + "';"
 ##            newresults = mycursor.fetchall()
 ##            print(table_headings())
 ##            print(tabulate(newresults))
+
+        elif window == window2 and event == 'VH356693':
+            print("This stupid button works.")
                 
 
         # Check Tab2 event.
-        if window == window2 and event == 'Search':
+        elif window == window2 and event == 'Search':
              SchedulerSystem = values['-SS-']
              sql1 = "SELECT * FROM DigitalDisplay WHERE schedulerSystem = '"+ SchedulerSystem + "';"
              mycursor.execute(sql1)
