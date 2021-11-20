@@ -34,7 +34,6 @@ def make_loginwin():
     # Creates the login window, with the layout as defined above.
     return sg.Window("Database Login", layout, finalize=True)
 
-
 # In this second section we create the second window with menus. In this window
 # the person will interact directly with the database after logging in.
 def make_dbwin(db_name, username, passwd, hostname):
@@ -52,8 +51,7 @@ def make_dbwin(db_name, username, passwd, hostname):
         models.append(answer[i][2])
 
     # We will create the menu tabs to put into the window first.
-    tab1_layout = [[sg.Text("Show all Digital Displays?"), sg.Button('Yes')]] + [
-        [sg.pin(sg.Button(f'{models[i]}', key=f'-{i}-', visible=False, enable_events=True)) for i in range(len(models))]]
+    tab1_layout = [[sg.pin(sg.Button(f'{models[i]}', key=f'-{i}-', visible=False, enable_events=True)) for i in range(len(models))]]
 
     tab2_layout = [[sg.Text("Enter Scheduler System type:"), sg.InputText(key='-SS-'),
                     sg.Button('Search', bind_return_key=True)]]
@@ -65,14 +63,16 @@ def make_dbwin(db_name, username, passwd, hostname):
     tab4_layout = []
     
     tab5_layout = []
+
+    tab_group = sg.TabGroup([[sg.Tab('1. Show Digital Displays', tab1_layout, key= '-TAB1-'),
+                          sg.Tab('2. Search Digital Displays', tab2_layout, key= '-TAB2-'),
+                          sg.Tab('3. Insert a Digital Display', tab3_layout, key= '-TAB3-'),
+                          sg.Tab('4. Delete a Digital Display', tab4_layout, key= '-TAB4-'),
+                          sg.Tab('5. Update a Digital Display', tab5_layout, key= '-TAB5-')]], enable_events=True, key = '-TABGROUP-')
     
-    layout = [[sg.TabGroup([[sg.Tab('1. Show Digital Displays', tab1_layout, key= '-TAB1-'),
-                          sg.Tab('2. Search Digital Displays', tab2_layout),
-                          sg.Tab('3. Insert a Digital Display', tab3_layout),
-                          sg.Tab('4. Delete a Digital Display', tab4_layout),
-                          sg.Tab('5. Update a Digital Display', tab5_layout)]], enable_events=True)],
-        [sg.Output(size=(120,30), key = '-Output-')],
-        [sg.Button('Logout'), sg.Button('Clear')]]
+    layout = [[tab_group],
+              [sg.Output(size=(120,30), key = '-Output-')],
+              [sg.Button('Logout'), sg.Button('Clear')]]
 
     # Creates the database interaction window, with the layout as specified above.
     return sg.Window("Main Database Menu", layout, finalize=True)
@@ -93,6 +93,22 @@ def database_conn(db_name, username, passwd, hostname):
         print(e)
     return mydb
 
+# dont change this value, unexpected behavior
+old_tab_key = '-TAB0-'
+
+def is_old_key(compKey):
+    return True if compKey == old_tab_key else False
+
+def set_old_key(key):
+    global old_tab_key
+    old_tab_key = key
+
+def get_old_key():
+    return old_tab_key
+
+def get_current_key(window):
+    return window.Element('-TABGROUP-').Get()
+
 
 # This method creates the table headings for menu option 1.
 def table_headings():
@@ -107,8 +123,7 @@ def main():
     # Creates the event loop.
     while True:
         window, event, values = sg.read_all_windows()
-    
-
+        
         # This ends the program if the user closes the login window or presses the Exit button.
         if window == window1 and event == sg.WIN_CLOSED or window == window1 and event == 'Exit':
             break
@@ -118,7 +133,6 @@ def main():
                 mycursor.close()
                 print("MySQL database connection is closed.")
     
-
         # This will save the values input in the login window. Also, we will launch the
         # second window here.
         elif event == 'Login' and not window2:
@@ -176,13 +190,26 @@ def main():
             models.append(answer1[i][2])
 
         # Checks the event for Tab 1: Show all digital displays.
-        if window == window2 and event == 'Yes':
+        if window == window2 and get_current_key(window) == '-TAB1-' and not is_old_key(get_current_key(window)):
+            set_old_key(get_current_key(window))
             print(table_headings())
             print(tabulate(answer1))
             for j in range(len(answer1)):
                 window[f'-{j}-'].update(visible=True)
             window.Refresh()
             sg.read_all_windows(timeout=1000)
+
+        if window == window2 and get_current_key(window) == '-TAB2-' and not is_old_key(get_current_key(window)):
+            set_old_key(get_current_key(window))
+
+        if window == window2 and get_current_key(window) == '-TAB3-' and not is_old_key(get_current_key(window)):
+            set_old_key(get_current_key(window))
+
+        if window == window2 and get_current_key(window) == '-TAB4-' and not is_old_key(get_current_key(window)):
+            set_old_key(get_current_key(window))
+
+        if window == window2 and get_current_key(window) == '-TAB5-' and not is_old_key(get_current_key(window)):
+            set_old_key(get_current_key(window))
 
     
         # Checks Tab 1 subevents (the model number buttons).      
