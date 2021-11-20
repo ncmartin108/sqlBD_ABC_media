@@ -108,6 +108,7 @@ def main():
     while True:
         window, event, values = sg.read_all_windows()
     
+
         # This ends the program if the user closes the login window or presses the Exit button.
         if window == window1 and event == sg.WIN_CLOSED or window == window1 and event == 'Exit':
             break
@@ -180,11 +181,13 @@ def main():
             print(tabulate(answer1))
             for j in range(len(answer1)):
                 window[f'-{j}-'].update(visible=True)
-            sg.read_all_windows()
+            window.Refresh()
+            sg.read_all_windows(timeout=1000)
+
     
         # Checks Tab 1 subevents (the model number buttons).      
-        elif window == window2 and event == '0':
-            print("The button works.")
+        elif window == window2 and event == '-0-':
+            print("Button -0- works.")
 ##            model_num = VH356693
 ##            print(model_num)
 ##            sql2 = "SELECT * FROM Model WHERE modelNo = '" + model_num + "';"
@@ -192,9 +195,17 @@ def main():
 ##            print(table_headings())
 ##            print(tabulate(newresults))
 
-        elif window == window2 and event == 'VH356693':
-            print("This stupid button works.")
-                
+        elif window == window2 and event == '-1-':
+            print("Button -1- works.")
+
+        elif window == window2 and event == '-2-':
+            print("Button -2- works.")
+
+        elif window == window2 and event == '-3-':
+            print("Button -3- works.")
+
+        elif window == window2 and event == '-4-':
+            print("Button -4- works.")     
 
         # Check Tab2 event.
         elif window == window2 and event == 'Search':
