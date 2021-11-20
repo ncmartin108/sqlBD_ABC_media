@@ -37,33 +37,43 @@ def make_loginwin():
 
 # In this second section we create the second window with menus. In this window
 # the person will interact directly with the database after logging in.
-def make_dbwin():
-    # We will create the menu tabs first.
-    tab1_layout = [
-        [sg.Text("Show all Digital Displays?"), sg.Button('Yes')]
-        ]
-    tab2_layout = [
-         [sg.Text("Enter Scheduler System type:"), sg.InputText(key='-SS-'), sg.Button('Search', bind_return_key=True)],
-        ]
-    tab3_layout = [
-         [sg.Text("Enter Serial Number:"), sg.InputText(key='-AddSN-')],
+def make_dbwin(db_name, username, passwd, hostname):
+
+    # I need a preliminary database connection to get answers for Tab 1.
+    db_conn = database_conn(db_name, username, passwd, hostname)
+    # Also need a cursor to get database information.
+    cursor1 = db_conn.cursor(buffered=True)
+    # Get all the digital displays information:
+    sql_1 = "SELECT * FROM DigitalDisplay;"
+    cursor1.execute(sql_1)
+    answer = cursor1.fetchall()
+    models = []
+    for i in range (len(answer)):
+        models.append(answer[i][2])
+
+    # We will create the menu tabs to put into the window first.
+    tab1_layout = [[sg.Text("Show all Digital Displays?"), sg.Button('Yes')]] + [
+        [sg.pin(sg.Button(f'{models[i]}', key=f'-{i}-', visible=False)) for i in range(len(models))]]
+
+    tab2_layout = [[sg.Text("Enter Scheduler System type:"), sg.InputText(key='-SS-'),
+                    sg.Button('Search', bind_return_key=True)]]
+
+    tab3_layout = [[sg.Text("Enter Serial Number:"), sg.InputText(key='-AddSN-')],
          [sg.Text("Enter Scheduler System type:"), sg.InputText(key='-AddSS-')],
-         [sg.Text("Enter ModelNo Number:"), sg.InputText(key='-AddMN-'),sg.Button('Add')],
-        ]
-    tab4_layout = [
-        ]
-    tab5_layout = [
-        ]
-    layout = [
-        [sg.TabGroup([[sg.Tab('1. Show Digital Displays', tab1_layout, key= '-TAB1-'),
+         [sg.Text("Enter ModelNo Number:"), sg.InputText(key='-AddMN-'),sg.Button('Add')]]
+
+    tab4_layout = []
+    
+    tab5_layout = []
+    
+    layout = [[sg.TabGroup([[sg.Tab('1. Show Digital Displays', tab1_layout, key= '-TAB1-'),
                           sg.Tab('2. Search Digital Displays', tab2_layout),
                           sg.Tab('3. Insert a Digital Display', tab3_layout),
                           sg.Tab('4. Delete a Digital Display', tab4_layout),
-                          sg.Tab('5. Update a Digital Display', tab5_layout)]])],
-        [sg.Output(size=(80,30), key = '-Output-')],
-        [sg.Button('Logout'), sg.Button('Clear')]
-        ]
-   
+                          sg.Tab('5. Update a Digital Display', tab5_layout)]], enable_events=True)],
+        [sg.Output(size=(120,30), key = '-Output-')],
+        [sg.Button('Logout'), sg.Button('Clear')]]
+
     # Creates the database interaction window, with the layout as specified above.
     return sg.Window("Main Database Menu", layout, finalize=True)
 
@@ -111,21 +121,19 @@ def main():
         # This will save the values input in the login window. Also, we will launch the
         # second window here.
         elif event == 'Login' and not window2:
-            db_name ='abc_media_db'
-            username ='root'
-            passwd = '1moreyearofschool'
-            hostname ='localhost'
+            db_name ='abc_media_db'         # delete after debugging
+            username ='root'                # delete after debugging
+            passwd = '1moreyearofschool'    # delete after debugging
+            hostname ='localhost'           # delete after debugging
 ##            db_name = values['-DB']
 ##            username = values['-Uname-']
 ##            passwd = values['-PW-']
 ##            hostname = values['-HName-']
             
-            # TEMP PRINT to make sure that we saved the input
-            print(db_name, '\t', username, '\t' , passwd)
             # Hide login window to stop interaction with it.
             window1.hide()
             # Create the database interaction window.
-            window2 = make_dbwin()
+            window2 = make_dbwin(db_name, username, passwd, hostname)
 
             # Create the database connection and login.
             mydb = database_conn(db_name, username, passwd, hostname)
@@ -143,6 +151,7 @@ def main():
         elif window == window2 and event == 'Logout':
             window2.close()
             window2 = None
+            window1.Finalize()
             window1.un_hide()
 
         elif window == window2 and event == 'Clear':
@@ -152,25 +161,38 @@ def main():
         elif window == window2 and event == sg.WIN_CLOSED:
             window2.close()
             window2 = None
+            window1.Finalize()
             window1.un_hide()
 
         # Check Tab 1 event:
         elif window == window2 and event == 'Yes':
             sql = "SELECT * FROM DigitalDisplay;"
             mycursor.execute(sql)
-            answer = mycursor.fetchall()
             print(table_headings())
+            answer = mycursor.fetchall()
             print(tabulate(answer))
+            models = []
+            for i in range(len(answer)):
+                models.append(answer[i][2])
+                window[f'-{i}-'].update(visible=True)
+                
+##        elif window == window2 and event=='0':
+##            model_num = models[0]
+##            print(model_num)
+##            sql2 = "SELECT * FROM Model WHERE modelNo = '" + model_num + "';"
+##            newresults = mycursor.fetchall()
+##            print(table_headings())
+##            print(tabulate(newresults))
+                
 
         # Check Tab2 event.
-        elif window == window2 and event == 'Search':
+        if window == window2 and event == 'Search':
              SchedulerSystem = values['-SS-']
              sql1 = "SELECT * FROM DigitalDisplay WHERE schedulerSystem = '"+ SchedulerSystem + "';"
              mycursor.execute(sql1)
              myresults=mycursor.fetchall()
              print(table_headings())
              print(tabulate(myresults))
-             window1.close()
 
         # check the tab event add.
         elif window == window2 and event == 'Add':
