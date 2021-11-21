@@ -58,7 +58,9 @@ def make_dbwin(db_name, username, passwd, hostname):
 
     tab3_layout = [[sg.Text("Enter Serial Number:"), sg.InputText(key='-AddSN-')],
          [sg.Text("Enter Scheduler System type:"), sg.InputText(key='-AddSS-')],
-         [sg.Text("Enter ModelNo Number:"), sg.InputText(key='-AddMN-'),sg.Button('Add')]]
+         [sg.Text("Enter ModelNo Number:"), sg.InputText(key='-AddMN-'),sg.Button('Add Digital Display')],
+                   ]
+    
 
     tab4_layout = []
     
@@ -244,27 +246,27 @@ def main():
              print(tabulate(myresults))
 
         # check the tab event add.
-        elif window == window2 and event == 'Add':
+        elif window == window2 and event == 'Add Digital Display':
             AddSerialNumber = values['-AddSN-']
             AddSchedulerSystem = values['-AddSS-']
             AddModelNumber = values['-AddMN-']
             check=True
             sql1= "SELECT modelNo FROM Model WHERE modelNo = '"+AddModelNumber+"';"
-            print(sql1)
+            #print(sql1)
             mycursor.execute(sql1)
             search_res=mycursor.fetchall()
             test=[] 
             if search_res ==test:
                 check=False
-            print(table_headings())
-            print(tabulate(search_res))
+            #print(table_headings())
+            #print(tabulate(search_res))
 
             sql2 = "SELECT modelNo FROM Model WHERE modelNo = '"+AddModelNumber+"';"
-            print(sql2)
+            #print(sql2)
             mycursor.execute(sql2)
             search_res=mycursor.fetchall()
             test=[] 
-            if search_res ==test:
+            if search_res ==test:#check to see if model was not found and returned empty.
                 check=False
             print(search_res)
 
@@ -278,17 +280,29 @@ def main():
             except:
                #insert code for new window asking for model data to be added.
                 if check==False:
-                     print("Could not insert Digital display because modelno not found")
-                     print("modelno not found")
+                     print("Could not insert Digital display because modelno not found, add model info")
+                     
+                     AddWidth = sg.popup_get_text('Width', 'input the width')
+                     AddHeight = sg.popup_get_text('Height', 'input the heigth')
+                     AddWeight = sg.popup_get_text('Weight', 'input the weight')
+                     AddDepth = sg.popup_get_text('Depth', 'input the depth')
+                     AddScreenS = sg.popup_get_text('Screen Size', 'input the screen size')
+                     
+                     sql= "INSERT INTO Model VALUES ('"+AddModelNumber+"','"+AddWidth+"','"+AddHeight+"','"+AddWeight+"','"+AddDepth+"','"+AddScreenS+"');"
+                     mycursor.execute(sql)
+                     mydb.commit()
+                     print("Model added, you can now add the Digital display")
+
+                     
+                     
             finally:
                 if check==True:
-                    print("modelno added")
+                    print("Digital Display added")
             sql1= "SELECT * FROM DigitalDisplay;"    
             mycursor.execute(sql1)
             myresults=mycursor.fetchall()
             print(table_headings())
             print(tabulate(myresults))
-            print(myresults)
 
 
     # Finish the program by closing the window.
