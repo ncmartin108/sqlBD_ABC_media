@@ -268,7 +268,7 @@ def main():
             test=[] 
             if search_res ==test:#check to see if model was not found and returned empty.
                 check=False
-            print(search_res)
+            #print(search_res)
 
 
             try:
@@ -282,27 +282,32 @@ def main():
                 if check==False:
                      print("Could not insert Digital display because modelno not found, add model info")
                      
-                     AddWidth = sg.popup_get_text('Width', 'input the width')
-                     AddHeight = sg.popup_get_text('Height', 'input the heigth')
-                     AddWeight = sg.popup_get_text('Weight', 'input the weight')
-                     AddDepth = sg.popup_get_text('Depth', 'input the depth')
-                     AddScreenS = sg.popup_get_text('Screen Size', 'input the screen size')
+                     AddWidth = sg.popup_get_text('Width', 'Must be numbers')
+                     AddHeight = sg.popup_get_text('Height', 'Must be numbers')
+                     AddWeight = sg.popup_get_text('Weight', 'Must be numbers')
+                     AddDepth = sg.popup_get_text('Depth', 'Must be numbers')
+                     AddScreenS = sg.popup_get_text('Screen Size', 'Must be numbers')
+                     try:
+                         sql= "INSERT INTO Model VALUES ('"+AddModelNumber+"','"+AddWidth+"','"+AddHeight+"','"+AddWeight+"','"+AddDepth+"','"+AddScreenS+"');"
+                         mycursor.execute(sql)
+                         mydb.commit()
+                         print("Model added, you can now add the Digital display")
+                     except:
+                          print("could not add model info")
+                          print("try again.")
                      
-                     sql= "INSERT INTO Model VALUES ('"+AddModelNumber+"','"+AddWidth+"','"+AddHeight+"','"+AddWeight+"','"+AddDepth+"','"+AddScreenS+"');"
-                     mycursor.execute(sql)
-                     mydb.commit()
-                     print("Model added, you can now add the Digital display")
+                         
 
                      
                      
             finally:
                 if check==True:
                     print("Digital Display added")
-            sql1= "SELECT * FROM DigitalDisplay;"    
-            mycursor.execute(sql1)
-            myresults=mycursor.fetchall()
-            print(table_headings())
-            print(tabulate(myresults))
+                    sql1= "SELECT * FROM DigitalDisplay;"
+                    mycursor.execute(sql1)
+                    myresults=mycursor.fetchall()
+                    print(table_headings())
+                    print(tabulate(myresults))
 
 
     # Finish the program by closing the window.
