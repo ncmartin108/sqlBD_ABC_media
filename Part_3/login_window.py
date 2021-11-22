@@ -47,8 +47,11 @@ def make_dbwin(db_name, username, passwd, hostname):
     cursor1.execute(sql_1)
     answer = cursor1.fetchall()
     models = []
+    serialNos = []
     for i in range (len(answer)):
         models.append(answer[i][2])
+    for j in range(len(answer)):
+        serialNos.append(answer[j][0])
 
     # We will create the menu tabs to put into the window first.
     tab1_layout = [[sg.pin(sg.Button(f'{models[i]}', key=f'-{i}-', visible=False, enable_events=True)) for i in range(len(models))]]
@@ -64,7 +67,7 @@ def make_dbwin(db_name, username, passwd, hostname):
 
     tab4_layout = []
     
-    tab5_layout = []
+    tab5_layout = [[sg.pin(sg.Button(f'{serialNos[i]}', key=f'--{i}--', visible=False, enable_events=True)) for i in range(len(serialNos))]]
 
     tab_group = sg.TabGroup([[sg.Tab('1. Show Digital Displays', tab1_layout, key= '-TAB1-'),
                           sg.Tab('2. Search Digital Displays', tab2_layout, key= '-TAB2-'),
@@ -111,6 +114,24 @@ def get_old_key():
 def get_current_key(window):
     return window.Element('-TABGROUP-').Get()
 
+def update_dd(nameOfField, hintText, serialNo, mydb, mycursor):
+    UpdateVar = sg.popup_get_text(nameOfField, hintText)
+    #UpdateSerialNo = sg.popup_get_text('Serial Number', 'Alphanumeric')
+    try:
+        sql = "UPDATE DigitalDisplay SET " + '{0} = '.format(nameOfField) + "('"+UpdateVar+"') WHERE serialNo = ('"+serialNo+"');"
+        mycursor.execute(sql)
+        mydb.commit()
+        print("Updated " + nameOfField + " of serialNo: " + serialNo + ' to ' + UpdateVar)
+    except:
+        print(nameOfField + " could not be updated, try again.")
+
+def print_displays(mycursor):
+    sql1= "SELECT * FROM DigitalDisplay;"
+    mycursor.execute(sql1)
+    myresults=mycursor.fetchall()
+    print(table_headings())
+    print(tabulate(myresults))
+    
 
 # This method creates the table headings for menu option 1.
 def table_headings():
@@ -188,9 +209,12 @@ def main():
         mycursor.execute(sql1)
         answer1 = mycursor.fetchall()
         models = []
+        serialNos = []
         for i in range(len(answer1)):
             models.append(answer1[i][2])
-
+        for j in range(len(answer1)):
+            serialNos.append(answer1[j][0])
+        
         # Checks the event for Tab 1: Show all digital displays.
         if window == window2 and get_current_key(window) == '-TAB1-' and not is_old_key(get_current_key(window)):
             set_old_key(get_current_key(window))
@@ -212,29 +236,38 @@ def main():
 
         if window == window2 and get_current_key(window) == '-TAB5-' and not is_old_key(get_current_key(window)):
             set_old_key(get_current_key(window))
+            for j in range(len(answer1)):
+                window[f'--{j}--'].update(visible=True)
+            window.Refresh()
+            sg.read_all_windows(timeout=1000)
 
-    
-        # Checks Tab 1 subevents (the model number buttons).      
-        elif window == window2 and event == '-0-':
-            print("Button -0- works.")
+        elif window == window2:
+            for k in range(len(serialNos)):
+                if event == "-{0}-".format(k):
+                    if get_current_key(window) == '-TAB1-':
+                        print("TAB1, button {0}".format(k))
+                elif event == "--{0}--".format(k):
+                    if get_current_key(window) == '-TAB5-':
+                        #print("TAB5, button {0}".format(k))
+                        serialNo = serialNos[k]
+                        
+                        print('All existing Digital Displays:')
+
+                        print_displays(mycursor)
+                        
+                        update_dd("serialNo", "Alphanumeric", serialNo, mydb, mycursor)
+                        update_dd("schedulerSystem", "random, virtue, smart", serialNo, mydb, mycursor)
+                        update_dd("modelNo", "Alphanumeric, Capitalized", serialNo, mydb, mycursor)
+
+                        print('Current existing Digital Displays:')
+                        print_displays(mycursor)
+                        
 ##            model_num = VH356693
 ##            print(model_num)
 ##            sql2 = "SELECT * FROM Model WHERE modelNo = '" + model_num + "';"
 ##            newresults = mycursor.fetchall()
 ##            print(table_headings())
-##            print(tabulate(newresults))
-
-        elif window == window2 and event == '-1-':
-            print("Button -1- works.")
-
-        elif window == window2 and event == '-2-':
-            print("Button -2- works.")
-
-        elif window == window2 and event == '-3-':
-            print("Button -3- works.")
-
-        elif window == window2 and event == '-4-':
-            print("Button -4- works.")     
+##            print(tabulate(newresults))                            
 
         # Check Tab2 event.
         elif window == window2 and event == 'Search':
@@ -310,6 +343,8 @@ def main():
                     print(tabulate(myresults))
 
 
+        #elif window == window2 and event == 'Update a Digital Display':
+            
     # Finish the program by closing the window.
     window.close()
     
