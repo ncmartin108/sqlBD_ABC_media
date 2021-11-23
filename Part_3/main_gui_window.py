@@ -38,20 +38,9 @@ def make_loginwin():
 # the person will interact directly with the database after logging in.
 def make_dbwin(db_name, username, passwd, hostname):
 
-    # I need a preliminary database connection to get answers for Tab 1.
-    db_conn = database_conn(db_name, username, passwd, hostname)
-    # Also need a cursor to get database information.
-    cursor1 = db_conn.cursor(buffered=True)
-    # Get all the digital displays information:
-    sql_1 = "SELECT * FROM DigitalDisplay;"
-    cursor1.execute(sql_1)
-    answer = cursor1.fetchall()
-    models = []
-    for i in range (len(answer)):
-        models.append(answer[i][2])
-
     # We will create the menu tabs to put into the window first.
-    tab1_layout = [[sg.pin(sg.Button(f'{models[i]}', key=f'{i}', visible=True, enable_events=True)) for i in range(len(models))]]
+    tab1_layout = [[sg.Text("To see full Model information, enter the Model Number:"), sg.InputText(key='-MNum-')],
+                   [sg.Button('Display Model Info', bind_return_key=True)]]
 
     tab2_layout = [[sg.Text("Enter Scheduler System type:"), sg.InputText(key='-SS-'),
                     sg.Button('Search', bind_return_key=True)]]
@@ -258,71 +247,17 @@ def main():
             window1.Finalize()
             window1.un_hide()
 
-        # This small section sets up Tab 1 so that we can display all Digital Displays info
-        # and also display all the information about a specific model upon clicking that model
-        # number button.
-        sql1 = "SELECT * FROM DigitalDisplay;"
-        mycursor.execute(sql1)
-        answer1 = mycursor.fetchall()
-        models = []
-        serialNos = []
-        for i in range(len(answer1)):
-            models.append(answer1[i][2])
-        for j in range(len(answer1)):
-            serialNos.append(answer1[j][0])
         
         # Checks the event for Tab 1: Show all digital displays.
-        if window == window2 and get_current_key(window) == '-TAB1-':
+        elif window == window2 and get_current_key(window) == '-TAB1-':
             set_old_key(get_current_key(window))
             window.Refresh()
-            sg.read_all_windows(timeout=50)
-            print(ddisplay_headings())
-            print(tabulate(answer1))
+            print_displays(mycursor)
 
-            if event == '0':
-                model_no = models[0]
+            if event == 'Display Model Info':
+                model_no = values['-MNum-']
                 print_model_info(mydb, mycursor, model_no)
                 window.Refresh()
-            elif event == '1':
-                model_no = models[1]
-                print_model_info(mydb, mycursor, model_no)
-                window.Refresh()
-            elif event == '2':
-                model_no = models[2]
-                print_model_info(mydb, mycursor, model_no)
-                window.Refresh()
-            elif event == '3':
-                model_no = models[3]
-                print_model_info(mydb, mycursor, model_no)
-                window.Refresh()
-            elif event == '4':
-                model_no = models[4]
-                print_model_info(mydb, mycursor, model_no)
-                window.Refresh()
-            elif event == '5':
-                model_no = models[5]
-                print_model_info(mydb, mycursor, model_no)
-                window.Refresh()
-            elif event == '6':
-                model_no = models[6]
-                print_model_info(mydb, mycursor, model_no)
-                window.Refresh()
-            elif event == '7':
-                model_no = models[7]
-                print_model_info(mydb, mycursor, model_no)
-                window.Refresh()
-            elif event == '8':
-                model_no = models[8]
-                print_model_info(mydb, mycursor, model_no)
-                window.Refresh()
-            elif event == '9':
-                model_no = models[9]
-                print_model_info(mydb, mycursor, model_no)
-                window.Refresh()
-            elif event == '10':
-                model_no = models[10]
-                print_model_info(mydb, mycursor, model_no)
-                window.Refresh() 
 
 
         # Check Tab2 event.
@@ -401,7 +336,11 @@ def main():
                 print("That Digital Display already exists in the database. Nothing will be added.")
                 print_displays(mycursor)
 
+            else:
+                print("That Digital Display already exists in the database. Nothing will be added.")
+                print_displays(mycursor)
 
+            
         elif window == window2 and get_current_key(window) == '-TAB4-' and event == 'Delete':
             set_old_key(get_current_key(window))
             print_displays(mycursor)

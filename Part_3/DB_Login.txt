@@ -1,0 +1,4 @@
+Database Name:	abc_media_db
+Hostname:	localhost
+Username:	root
+Password:	1moreyearofschool
